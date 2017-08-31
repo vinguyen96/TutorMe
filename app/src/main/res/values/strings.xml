@@ -13,10 +13,14 @@
     <string name="title_activity_login">Sign in</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_name">Fullname</string>
+    <string name="hint_name">Full Name</string>
+    <string name="hint_age">Age</string>
+    <string name="hint_degree">Degree</string>
+    <string name="hint_contact">Contact</string>
+    <string name="btn_next">NEXT</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Get registered in TutorMe now!</string>
-    <string name="btn_link_to_login">Already registered. Login!</string>
+    <string name="btn_link_to_login">Already registered? Login!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
