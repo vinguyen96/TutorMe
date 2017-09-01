@@ -1,21 +1,29 @@
 package com.vinguyen.tutorme3;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,8 +32,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,13 +42,18 @@ public class MainActivity extends AppCompatActivity {
             changeEmail, changePassword, sendEmail, remove, signOut;
 
     private EditText oldEmail, newEmail, password, newPassword;
+    private TextView profileName, profileAge, profileDegree, profileContact;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     private FirebaseDatabase userDatabase;
     private DatabaseReference userReference;
     private String userID;
-    private ListView infoListView;
+    private ImageView imgView;
+    private int PICK_IMAGE_REQUEST = 111;
+    private Uri filePath;
+    private ProgressDialog uploadingPD;
+    private StorageReference myRef, defaultRef, storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +97,11 @@ public class MainActivity extends AppCompatActivity {
         newEmail = (EditText) findViewById(R.id.new_email);
         password = (EditText) findViewById(R.id.password);
         newPassword = (EditText) findViewById(R.id.newPassword);
-        infoListView=(ListView)findViewById(R.id.infoListView);
+
+        profileName=(TextView) findViewById(R.id.profileName);
+        profileAge=(TextView) findViewById(R.id.profileAge);
+        profileDegree=(TextView) findViewById(R.id.profileDegree);
+        profileContact=(TextView) findViewById(R.id.profileContact);
 
         oldEmail.setVisibility(View.GONE);
         newEmail.setVisibility(View.GONE);
@@ -102,17 +120,47 @@ public class MainActivity extends AppCompatActivity {
 
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
-        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            userReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    showData(dataSnapshot);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
 
-        userReference.addValueEventListener(new ValueEventListener() {
+
+
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://tutorme-61083.appspot.com/userProfileImages");
+        myRef = storageRef.child(userID + ".jpg");
+        defaultRef = storageRef.child("default.jpg");
+
+        imgView = (ImageView)findViewById(R.id.imgView);
+
+        uploadingPD = new ProgressDialog(this);
+        uploadingPD.setMessage("Uploading....");
+
+        myRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                showData(dataSnapshot);
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext()).using(new FirebaseImageLoader()).load(myRef).into(imgView);
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onFailure(@NonNull Exception exception) {
+                Glide.with(getApplicationContext()).using(new FirebaseImageLoader()).load(defaultRef).into(imgView);
+            }
+        });
 
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage();
             }
         });
 
@@ -281,14 +329,10 @@ public class MainActivity extends AppCompatActivity {
                 userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
 
-                ArrayList<String> array=new ArrayList<>();
-                array.add(userEntity.getName());
-                array.add(userEntity.getAge());
-                array.add(userEntity.getDegree());
-                array.add(userEntity.getContact());
-
-                ArrayAdapter adapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1,array);
-                infoListView.setAdapter(adapter);
+                profileName.setText("Name: " + userEntity.getName());
+                profileAge.setText("Age: " + userEntity.getAge());
+                profileDegree.setText("Degree: " + userEntity.getDegree());
+                profileContact.setText("Contact: " + userEntity.getContact());
             }
         }
 
@@ -316,6 +360,62 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (authListener != null) {
             auth.removeAuthStateListener(authListener);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+
+            try {
+                //getting image from gallery
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+
+                //Setting image to ImageView
+                imgView.setImageBitmap(bitmap);
+                uploadImage();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected void selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+
+    protected void uploadImage() {
+        if(filePath != null) {
+            uploadingPD.show();
+
+            StorageReference childRef = storageRef.child(userID + ".jpg");
+
+            //uploading the image
+            UploadTask uploadTask = childRef.putFile(filePath);
+
+            uploadTask
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    uploadingPD.dismiss();
+                    Toast.makeText(MainActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    uploadingPD.dismiss();
+                    Toast.makeText(MainActivity.this, "Upload Failed -> " + e, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Select an image", Toast.LENGTH_SHORT).show();
         }
     }
 }
