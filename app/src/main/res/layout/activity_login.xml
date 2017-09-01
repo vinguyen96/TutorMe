@@ -8,14 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.vinguyen.tutorme3.LoginActivity">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -95,5 +87,14 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="15dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone" />
+
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -17,6 +19,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    private FirebaseDatabase userDatabase;
+    private DatabaseReference userReference;
+    private String userID;
+    private ListView infoListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         newEmail = (EditText) findViewById(R.id.new_email);
         password = (EditText) findViewById(R.id.password);
         newPassword = (EditText) findViewById(R.id.newPassword);
+        infoListView=(ListView)findViewById(R.id.infoListView);
 
         oldEmail.setVisibility(View.GONE);
         newEmail.setVisibility(View.GONE);
@@ -85,6 +99,22 @@ public class MainActivity extends AppCompatActivity {
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+
+        userDatabase = FirebaseDatabase.getInstance();
+        userReference = userDatabase.getReference();
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                showData(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         btnChangeEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,6 +270,27 @@ public class MainActivity extends AppCompatActivity {
                 signOut();
             }
         });
+
+    }
+    private void showData(DataSnapshot dataSnapshot){
+        for(DataSnapshot ds:dataSnapshot.getChildren()){
+            UserEntity userEntity=new UserEntity();
+            if (ds.hasChild(userID)){
+                userEntity.setName(ds.child(userID).getValue(UserEntity.class).getName());
+                userEntity.setAge(ds.child(userID).getValue(UserEntity.class).getAge());
+                userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
+                userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
+
+                ArrayList<String> array=new ArrayList<>();
+                array.add(userEntity.getName());
+                array.add(userEntity.getAge());
+                array.add(userEntity.getDegree());
+                array.add(userEntity.getContact());
+
+                ArrayAdapter adapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1,array);
+                infoListView.setAdapter(adapter);
+            }
+        }
 
     }
 
