@@ -126,7 +126,7 @@ public class SignupActivity extends AppCompatActivity {
                 UserEntity userEntity = new UserEntity(name, age, degree, contact);
                 userDatabaseReference.child(currentFirebaseUser.getUid()).setValue(userEntity);
 
-                startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                startActivity(new Intent(SignupActivity.this, NavigationDrawerActivity.class));
 
                 //progressBar.setVisibility(View.VISIBLE);
                 //create user
