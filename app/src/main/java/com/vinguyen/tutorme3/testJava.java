@@ -6,7 +6,4 @@ package com.vinguyen.tutorme3;
 
 public class testJava {
 
-    System.out.println("hey steven");
-    System.out.println("HEY STEVEN");
-
 }
