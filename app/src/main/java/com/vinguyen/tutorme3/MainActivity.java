@@ -132,9 +132,6 @@ public class MainActivity extends Fragment {
             });
         }
 
-
-
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://tutorme-61083.appspot.com/userProfileImages");
         myRef = storageRef.child(userID + ".jpg");
@@ -322,6 +319,7 @@ public class MainActivity extends Fragment {
         });
         return rootView;
     }
+
     private void showData(DataSnapshot dataSnapshot){
         for(DataSnapshot ds:dataSnapshot.getChildren()){
             UserEntity userEntity=new UserEntity();

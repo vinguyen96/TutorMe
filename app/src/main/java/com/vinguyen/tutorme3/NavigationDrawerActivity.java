@@ -9,9 +9,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private FirebaseDatabase userDatabase;
+    private DatabaseReference userReference;
+    private TextView navName, navEmail;
+    private String userID, emailString;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +51,29 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });*/
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        navName = (TextView) header.findViewById(R.id.name);
+        navEmail = (TextView) header.findViewById(R.id.email);
+
+        userDatabase = FirebaseDatabase.getInstance();
+        userReference = userDatabase.getReference();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            userID = user.getUid();
+            emailString = user.getEmail();
+            userReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    showData(dataSnapshot);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,8 +81,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -111,4 +149,25 @@ public class NavigationDrawerActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void showData(DataSnapshot dataSnapshot){
+        for(DataSnapshot ds:dataSnapshot.getChildren()){
+            UserEntity userEntity=new UserEntity();
+            if (ds.hasChild(userID)){
+                userEntity.setName(ds.child(userID).getValue(UserEntity.class).getName());
+                userEntity.setAge(ds.child(userID).getValue(UserEntity.class).getAge());
+                userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
+                userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
+                navName.setText(userEntity.getName());
+                navEmail.setText(emailString);
+            }
+        }
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
 }
