@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -142,19 +143,7 @@ public class MainActivity extends Fragment {
         uploadingPD = new ProgressDialog(getActivity());
         uploadingPD.setMessage("Uploading....");
 
-        if (getActivity() != null) {
-            myRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(MainActivity.this).using(new FirebaseImageLoader()).load(myRef).into(imgView);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Glide.with(MainActivity.this).using(new FirebaseImageLoader()).load(defaultRef).into(imgView);
-                }
-            });
-        }
+        refreshImage();
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -404,18 +393,36 @@ public class MainActivity extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     uploadingPD.dismiss();
+                    refreshImage();
                     Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     uploadingPD.dismiss();
+                    refreshImage();
                     Toast.makeText(getActivity(), "Upload Failed -> " + e, Toast.LENGTH_SHORT).show();
                 }
             });
         }
         else {
             Toast.makeText(getActivity(), "Select an image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void refreshImage() {
+        if (getActivity() != null) {
+            myRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(getActivity()).using(new FirebaseImageLoader()).load(myRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Glide.with(getActivity()).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                }
+            });
         }
     }
 }
