@@ -56,6 +56,7 @@ public class MainActivity extends Fragment {
     private Uri filePath;
     private ProgressDialog uploadingPD;
     private StorageReference myRef, defaultRef, storageRef;
+    private DatabaseReference userDatabaseReference;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,6 +131,29 @@ public class MainActivity extends Fragment {
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setMonday(ds.child(userID).getValue(UserEntity.class).getMonday());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
             });
         }
 

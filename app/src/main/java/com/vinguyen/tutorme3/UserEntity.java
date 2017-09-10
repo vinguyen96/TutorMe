@@ -9,6 +9,7 @@ public class UserEntity {
     public String age;
     public String degree;
     public String contact;
+    public String monday;
 
     public UserEntity() {
     }
@@ -35,6 +36,16 @@ public class UserEntity {
         this.degree = degree;
         this.contact = contact;
     }
+
+    public String getMonday() {
+        return monday;
+    }
+
+    public void setMonday(String monday) {
+        this.monday = monday;
+    }
+
+
 
     public String getName() {
         return name;
