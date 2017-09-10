@@ -23,15 +23,6 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".ResetPasswordActivity" />
-        <activity
-            android:name=".MyStudents"
-            android:label="@string/title_activity_my_students"
-            android:parentActivityName=".NavigationDrawerActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.vinguyen.tutorme3.NavigationDrawerActivity" />
-        </activity>
     </application>
 
 </manifest>
