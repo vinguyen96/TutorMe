@@ -3,11 +3,13 @@ package com.vinguyen.tutorme3;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +53,13 @@ public class MainActivity extends Fragment {
     private FirebaseDatabase userDatabase;
     private DatabaseReference userReference;
     private String userID;
-    private ImageView imgView;
+    private ImageView imgView, mondayView;
     private int PICK_IMAGE_REQUEST = 111;
     private Uri filePath;
     private ProgressDialog uploadingPD;
     private StorageReference myRef, defaultRef, storageRef;
     private DatabaseReference userDatabaseReference;
+    private String mondayAvailability = "no";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,6 +108,8 @@ public class MainActivity extends Fragment {
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
 
+        mondayView = (ImageView) rootView.findViewById(R.id.monday);
+
         oldEmail.setVisibility(View.GONE);
         newEmail.setVisibility(View.GONE);
         password.setVisibility(View.GONE);
@@ -133,29 +138,28 @@ public class MainActivity extends Fragment {
                 public void onCancelled(DatabaseError databaseError) { }
             });
         }
+        getMondayAvailability();
+        Log.d("TEST", mondayAvailability);
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
-            userDatabaseReference = userDatabase.getReference();
-
-
-            userDatabaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds:dataSnapshot.getChildren()){
-                        UserEntity availability = new UserEntity();
-                        if (ds.hasChild(userID)) {
-                            availability.setMonday(ds.child(userID).getValue(UserEntity.class).getMonday());
-                        }
-                    }
+        mondayView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference userDatabaseReference = userDatabase.getReference("Users");
+                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                getMondayAvailability();
+                if (mondayAvailability.equals("no")){
+                    userDatabaseReference.child(currentFirebaseUser.getUid()).child("monday").setValue("yes");
+                    Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.mondayfilled);
+                    mondayView.setImageBitmap(bImage);
                 }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
+                else {
+                    userDatabaseReference.child(currentFirebaseUser.getUid()).child("monday").setValue("no");
+                    Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.monday);
+                    mondayView.setImageBitmap(bImage);
                 }
-            });
-        }
+            }
+        });
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://tutorme-61083.appspot.com/userProfileImages");
@@ -445,6 +449,39 @@ public class MainActivity extends Fragment {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     Glide.with(getActivity()).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                }
+            });
+        }
+    }
+
+    public void getMondayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setMonday(ds.child(userID).getValue(UserEntity.class).getMonday());
+                            if (availability.getMonday().equals("yes")) {
+                                mondayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.mondayfilled);
+                                mondayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getMonday().equals("no")) {
+                                mondayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.monday);
+                                mondayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
             });
         }
