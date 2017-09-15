@@ -27,6 +27,7 @@
                 android:id="@+id/imgView"
                 android:layout_width="@dimen/logo_w_h"
                 android:layout_height="@dimen/logo_w_h"
+                app:srcCompat="@drawable/defaultprofile"
                 android:layout_gravity="center_horizontal" />
 
             <LinearLayout
