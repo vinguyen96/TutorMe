@@ -19,6 +19,12 @@ public class UserEntity {
 
     public UserEntity() {
         this.monday = "no";
+        this.tuesday = "no";
+        this.wednesday = "no";
+        this.thursday= "no";
+        this.friday = "no";
+        this.saturday = "no";
+        this.sunday = "no";
     }
 
     public void setName(String name) {
