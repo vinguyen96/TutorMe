@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,12 +29,16 @@ import com.google.firebase.storage.StorageReference;
 
 public class UserViewFragment extends Fragment {
 
-    private FirebaseDatabase userDatabase;
+    private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference;
     private TextView profileName, profileAge, profileDegree, profileContact;
     private ImageView imgView;
     String userID;
     private StorageReference myRef, defaultRef, storageRef;
+    private Button becomeStudent;
+    private FirebaseDatabase userDatabase;
+    private DatabaseReference userDatabaseReference;
+    private String userIDCurrent;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,10 +71,27 @@ public class UserViewFragment extends Fragment {
                     Log.d("CHECKPOINT", userID);
                     showData(dataSnapshot);
                 }
+
                 @Override
-                public void onCancelled(DatabaseError databaseError) { }
+                public void onCancelled(DatabaseError databaseError) {
+                }
             });
         }
+            becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
+            userDatabase=FirebaseDatabase.getInstance();
+            userDatabaseReference=userDatabase.getReference("Courses");
+            becomeStudent.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick(View view) {
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        Log.d("USERID", userID);
+                        userDatabaseReference.child("INFS1609").child("Tutors").child(userID).child(userIDCurrent).setValue("pending");
+                    }
+                }
+                });
         return rootView;
     }
 
