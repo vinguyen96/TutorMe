@@ -1,6 +1,8 @@
 package com.vinguyen.tutorme3;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +10,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import java.util.List;
+import java.util.Random;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,11 +29,21 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText inputEmail, inputPassword, inputName, inputAge, inputDegree, inputContact;
+    private EditText inputEmail, inputPassword, inputName, inputAge, inputDegree, inputContact, captchaText;
     private Button btnSignIn, btnSignUp, btnNext;
     private String email, password, name, age, degree, contact;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+    protected Bitmap image;
+    protected String answer = "";
+    private int width;
+    protected int height;
+    protected int x = 0;
+    protected int y = 0;
+    protected static List usedColors;
+    private Mathcap mathCaptcha;
+    private EditText Captchatext;
+    private ImageView imageView1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +70,10 @@ public class SignupActivity extends AppCompatActivity {
         inputDegree.setVisibility(View.GONE);
         inputContact.setVisibility(View.GONE);
 
+        imageView1 = (ImageView)findViewById(R.id.imageView);
+        captchaText = (EditText) findViewById(R.id.captchaText);
+        mathCaptcha = new Mathcap(600, 150, Mathcap.MathOptions.PLUS_MINUS);
+        imageView1.setImageBitmap(mathCaptcha.getImage());
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +99,15 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (checkString(password)==false){
+                    Toast.makeText(getApplicationContext(), "Password must have at least 1 numerical digit, an uppercase and a lowercase character!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!mathCaptcha.checkAnswer(captchaText.getText().toString().trim())) {
+                    Toast.makeText(getApplicationContext(), "Captcha does not match", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
 
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
@@ -140,4 +171,29 @@ public class SignupActivity extends AppCompatActivity {
         super.onResume();
         progressBar.setVisibility(View.GONE);
     }
+
+    private static boolean checkString(String str) {
+        char ch;
+        boolean capitalFlag = false;
+        boolean lowerCaseFlag = false;
+        boolean numberFlag = false;
+        for(int i=0;i < str.length();i++) {
+            ch = str.charAt(i);
+            if( Character.isDigit(ch)) {
+                numberFlag = true;
+            }
+            else if (Character.isUpperCase(ch)) {
+                capitalFlag = true;
+            }
+            else if (Character.isLowerCase(ch)) {
+                lowerCaseFlag = true;
+            }
+            if(numberFlag && capitalFlag && lowerCaseFlag){
+                return true;
+            }
+        }
+        return false;
+    }
 }
+
+
