@@ -27,13 +27,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-public class UserViewFragment extends Fragment {
+public class TutorProfileViewFragment extends Fragment {
 
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference;
     private TextView profileName, profileAge, profileDegree, profileContact;
     private ImageView imgView;
-    String userID;
+    private String userID, currentUserID;
     private StorageReference myRef, defaultRef, storageRef;
     private Button becomeStudent;
     private FirebaseDatabase userDatabase;
@@ -49,6 +49,7 @@ public class UserViewFragment extends Fragment {
         if (bundle != null) {
             userID = bundle.getString("message");
         }
+        currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         profileName=(TextView) rootView.findViewById(R.id.profileName);
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
@@ -77,9 +78,13 @@ public class UserViewFragment extends Fragment {
                 }
             });
         }
-            becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
-            userDatabase=FirebaseDatabase.getInstance();
-            userDatabaseReference=userDatabase.getReference("Courses");
+        becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
+        if (currentUserID.equals(userID)) {
+            becomeStudent.setVisibility(View.GONE);
+        }
+
+        userDatabase=FirebaseDatabase.getInstance();
+        userDatabaseReference=userDatabase.getReference("Courses");
             becomeStudent.setOnClickListener(new View.OnClickListener()
 
             {
@@ -89,6 +94,10 @@ public class UserViewFragment extends Fragment {
                         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Log.d("USERID", userID);
                         userDatabaseReference.child("INFS1609").child("Tutors").child(userID).child(userIDCurrent).setValue("pending");
+                        /*FindTutorFragment fragment = new FindTutorFragment();
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, fragment)
+                                .commit();*/
                     }
                 }
                 });

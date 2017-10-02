@@ -1,5 +1,6 @@
 package com.vinguyen.tutorme3;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -51,7 +52,7 @@ public class MainActivity extends Fragment {
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     private FirebaseDatabase userDatabase;
-    private DatabaseReference userReference;
+    private DatabaseReference userReference, userDBReference;
     private String userID;
     private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
     private int PICK_IMAGE_REQUEST = 111;
@@ -66,12 +67,15 @@ public class MainActivity extends Fragment {
     private String fridayAvailability = "no";
     private String saturdayAvailability = "no";
     private String sundayAvailability = "no";
+    private Bitmap bImageMonday;
+    private Activity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
+        activity = getActivity();
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -601,28 +605,27 @@ public class MainActivity extends Fragment {
     public void getMondayAvailability() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
-            userDatabaseReference = userDatabase.getReference();
-
+            DatabaseReference userDatabaseReference = userDatabase.getReference();
             userDatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         UserEntity availability = new UserEntity();
                         if (ds.hasChild(userID)) {
                             availability.setMonday(ds.child(userID).getValue(UserEntity.class).getMonday());
                             if (availability.getMonday().equals("yes")) {
                                 mondayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.mondayfilled);
-                                mondayView.setImageBitmap(bImage);
+                                bImageMonday = BitmapFactory.decodeResource(activity.getResources(), R.drawable.mondayfilled);
                             }
                             if (availability.getMonday().equals("no")) {
                                 mondayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.monday);
-                                mondayView.setImageBitmap(bImage);
+                                bImageMonday = BitmapFactory.decodeResource(activity.getResources(), R.drawable.monday);
                             }
+                            mondayView.setImageBitmap(bImageMonday);
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -645,12 +648,12 @@ public class MainActivity extends Fragment {
                             availability.setTuesday(ds.child(userID).getValue(UserEntity.class).getTuesday());
                             if (availability.getTuesday().equals("yes")) {
                                 tuesdayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.tuesdayfilled);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.tuesdayfilled);
                                 tuesdayView.setImageBitmap(bImage);
                             }
                             if (availability.getTuesday().equals("no")) {
                                 tuesdayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.tuesday);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.tuesday);
                                 tuesdayView.setImageBitmap(bImage);
                             }
                         }
@@ -679,12 +682,12 @@ public class MainActivity extends Fragment {
                             availability.setWednesday(ds.child(userID).getValue(UserEntity.class).getWednesday());
                             if (availability.getWednesday().equals("yes")) {
                                 wednesdayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.wednesdayfilled);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.wednesdayfilled);
                                 wednesdayView.setImageBitmap(bImage);
                             }
                             if (availability.getWednesday().equals("no")) {
                                 wednesdayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.wednesday);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.wednesday);
                                 wednesdayView.setImageBitmap(bImage);
                             }
                         }
@@ -711,12 +714,12 @@ public class MainActivity extends Fragment {
                             availability.setThursday(ds.child(userID).getValue(UserEntity.class).getThursday());
                             if (availability.getThursday().equals("yes")) {
                                 thursdayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.thursdayfilled);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.thursdayfilled);
                                 thursdayView.setImageBitmap(bImage);
                             }
                             if (availability.getThursday().equals("no")) {
                                 thursdayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.thursday);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.thursday);
                                 thursdayView.setImageBitmap(bImage);
                             }
                         }
@@ -744,12 +747,12 @@ public class MainActivity extends Fragment {
                             availability.setFriday(ds.child(userID).getValue(UserEntity.class).getFriday());
                             if (availability.getFriday().equals("yes")) {
                                 fridayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.fridayfilled);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.fridayfilled);
                                 fridayView.setImageBitmap(bImage);
                             }
                             if (availability.getFriday().equals("no")) {
                                 fridayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.friday);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.friday);
                                 fridayView.setImageBitmap(bImage);
                             }
                         }
@@ -777,12 +780,12 @@ public class MainActivity extends Fragment {
                             availability.setSaturday(ds.child(userID).getValue(UserEntity.class).getSaturday());
                             if (availability.getSaturday().equals("yes")) {
                                 saturdayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.saturdayfilled);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.saturdayfilled);
                                 saturdayView.setImageBitmap(bImage);
                             }
                             if (availability.getSaturday().equals("no")) {
                                 saturdayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.saturday);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.saturday);
                                 saturdayView.setImageBitmap(bImage);
                             }
                         }
@@ -810,12 +813,12 @@ public class MainActivity extends Fragment {
                             availability.setSunday(ds.child(userID).getValue(UserEntity.class).getSunday());
                             if (availability.getSunday().equals("yes")) {
                                 sundayAvailability = "yes";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.sundayfilled);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.sundayfilled);
                                 sundayView.setImageBitmap(bImage);
                             }
                             if (availability.getSunday().equals("no")) {
                                 sundayAvailability = "no";
-                                Bitmap bImage = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.sunday);
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.sunday);
                                 sundayView.setImageBitmap(bImage);
                             }
                         }

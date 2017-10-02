@@ -146,6 +146,12 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+        } else if (id == R.id.pending) {
+            PendingFragment fragment = new PendingFragment();
+            android.support.v4.app.FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
         } else if (id == R.id.myStudents) {
 
         } else if (id == R.id.nav_share) {
