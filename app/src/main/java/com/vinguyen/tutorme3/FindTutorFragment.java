@@ -1,6 +1,7 @@
 package com.vinguyen.tutorme3;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,7 +26,9 @@ import java.util.ArrayList;
 public class FindTutorFragment extends Fragment {
 
     private ListView listView;
-    private ArrayAdapter arrayAdapter, arrayAdapterID;
+    private ArrayAdapter<String> arrayAdapter;
+    private ArrayAdapter arrayAdapterID;
+    private Activity activity;
     DatabaseReference databaseRef;
     ArrayList<String> tutors;
     ArrayList<String> tutorsID;
@@ -35,7 +38,7 @@ public class FindTutorFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_find_tutor, container, false);
-
+        activity = getActivity();
         databaseRef = FirebaseDatabase.getInstance().getReference();
         listView = (ListView)rootView.findViewById(R.id.listView);
 
@@ -106,7 +109,7 @@ public class FindTutorFragment extends Fragment {
                     }
                 }
 
-                arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                arrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1,
                         tutors);
                 listView.setAdapter(arrayAdapter);
             }
