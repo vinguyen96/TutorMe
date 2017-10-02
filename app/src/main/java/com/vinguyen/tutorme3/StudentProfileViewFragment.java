@@ -46,6 +46,7 @@ public class StudentProfileViewFragment extends Fragment {
         if (bundle != null) {
             userID = bundle.getString("message");
         }
+        userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         profileName=(TextView) rootView.findViewById(R.id.profileName);
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
@@ -65,7 +66,6 @@ public class StudentProfileViewFragment extends Fragment {
             userReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("CHECKPOINT", userID);
                     showData(dataSnapshot);
                 }
 
@@ -81,11 +81,13 @@ public class StudentProfileViewFragment extends Fragment {
 
         databaseRef = FirebaseDatabase.getInstance().getReference();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
+                        Log.d("CHECKPOINT10", student.getKey().toString() + " " + student.getValue().toString());
                         if (student.getValue().equals("pending") == false) {
+
                             acceptBtn.setVisibility(View.GONE);
                             rejectBtn.setVisibility(View.GONE);
                         }
@@ -103,7 +105,6 @@ public class StudentProfileViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
                     PendingFragment fragment = new PendingFragment();
@@ -117,7 +118,6 @@ public class StudentProfileViewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("rejected");
                     PendingFragment fragment = new PendingFragment();

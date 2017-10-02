@@ -19,6 +19,14 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="PendingTest" /> <!-- CHANGE TO STRINGS.XML -->
         <item
+            android:id="@+id/accepted"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="AcceptedTest" /> <!-- CHANGE TO STRINGS.XML -->
+        <item
+            android:id="@+id/rejected"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="RejectedTest" /> <!-- CHANGE TO STRINGS.XML -->
+        <item
             android:id="@+id/myTutors"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="My Tutors" />

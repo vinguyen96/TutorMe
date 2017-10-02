@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class AcceptedFragment extends Fragment {
+public class RejectedFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> arrayAdapter;
     private ArrayAdapter arrayAdapterID;
@@ -33,7 +33,7 @@ public class AcceptedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_accepted, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_rejected, container, false);
         activity = getActivity();
 
         databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -47,7 +47,7 @@ public class AcceptedFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
-                        if (student.getValue().equals("accepted")) {
+                        if (student.getValue().equals("rejected")) {
                             compareUsers(student);
                         }
                     }
