@@ -27,29 +27,25 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-public class TutorProfileViewFragment extends Fragment {
-
+public class StudentProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
-    private DatabaseReference userReference;
+    private DatabaseReference userReference, userDatabaseReference, databaseRef;
     private TextView profileName, profileAge, profileDegree, profileContact;
     private ImageView imgView;
-    private String userID, currentUserID;
+    private String userID;
+    private Button acceptBtn, rejectBtn;
     private StorageReference myRef, defaultRef, storageRef;
-    private Button becomeStudent;
     private FirebaseDatabase userDatabase;
-    private DatabaseReference userDatabaseReference;
     private String userIDCurrent;
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_user_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_student_profile_view, container, false);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             userID = bundle.getString("message");
         }
-        currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         profileName=(TextView) rootView.findViewById(R.id.profileName);
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
@@ -78,29 +74,59 @@ public class TutorProfileViewFragment extends Fragment {
                 }
             });
         }
-        becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
-        if (currentUserID.equals(userID)) {
-            becomeStudent.setVisibility(View.GONE);
-        }
-
+        acceptBtn = (Button) rootView.findViewById(R.id.acceptBtn);
+        rejectBtn = (Button) rootView.findViewById(R.id.rejectBtn);
         userDatabase=FirebaseDatabase.getInstance();
         userDatabaseReference=userDatabase.getReference("Courses");
-            becomeStudent.setOnClickListener(new View.OnClickListener()
 
-            {
+        databaseRef = FirebaseDatabase.getInstance().getReference();
+        if (userID != null) {
+            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onClick(View view) {
-                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                        userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        Log.d("USERID", userID);
-                        userDatabaseReference.child("INFS1609").child("Tutors").child(userID).child(userIDCurrent).setValue("pending");
-                        /*FindTutorFragment fragment = new FindTutorFragment();
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, fragment)
-                                .commit();*/
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot student : dataSnapshot.getChildren()) {
+                        if (student.getValue().equals("pending") == false) {
+                            acceptBtn.setVisibility(View.GONE);
+                            rejectBtn.setVisibility(View.GONE);
+                        }
                     }
                 }
-                });
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        acceptBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Log.d("USERID", userID);
+                    userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
+                    PendingFragment fragment = new PendingFragment();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
+                }
+            }
+        });
+        rejectBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Log.d("USERID", userID);
+                    userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("rejected");
+                    PendingFragment fragment = new PendingFragment();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
+                }
+            }
+        });
         return rootView;
     }
 

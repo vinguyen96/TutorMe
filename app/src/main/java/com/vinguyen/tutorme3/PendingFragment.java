@@ -27,7 +27,8 @@ import java.util.ArrayList;
 public class PendingFragment extends Fragment {
 
     private ListView listView;
-    private ArrayAdapter arrayAdapter, arrayAdapterID;
+    private ArrayAdapter<String> arrayAdapter;
+    private ArrayAdapter arrayAdapterID;
     private String userID;
     private Activity activity;
     DatabaseReference databaseRef;
@@ -38,7 +39,7 @@ public class PendingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_find_tutor, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_pending, container, false);
         activity = getActivity();
 
         databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -52,7 +53,9 @@ public class PendingFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
-                        compareUsers(student);
+                        if (student.getValue().equals("pending")) {
+                            compareUsers(student);
+                        }
                     }
                 }
 
@@ -62,22 +65,24 @@ public class PendingFragment extends Fragment {
                 }
             });
         }
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                /*Bundle bundle = new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putString("message", tutorsID.get(position));
-                UserViewFragment fragment = new UserViewFragment();
+                StudentProfileViewFragment fragment = new StudentProfileViewFragment();
                 fragment.setArguments(bundle);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)
-                        .commit();*/
+                        .commit();
                 //Toast.makeText(getActivity(), tutorsID.get(position), Toast.LENGTH_SHORT).show();
             }
         });
+
 
         return rootView;
     }
@@ -88,6 +93,7 @@ public class PendingFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.getKey().equals(student.getKey())) {
+
                         showData(student);
                     }
                 }
@@ -104,6 +110,7 @@ public class PendingFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserEntity userEntity = new UserEntity();
+                tutors.clear();
                 String key = student.getKey();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.hasChild(key)) {
@@ -114,7 +121,7 @@ public class PendingFragment extends Fragment {
                     }
                 }
 
-                arrayAdapter = new ArrayAdapter(activity, android.R.layout.simple_list_item_1,
+                arrayAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1,
                         tutors);
                 listView.setAdapter(arrayAdapter);
             }

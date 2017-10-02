@@ -29,56 +29,6 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 app:srcCompat="@drawable/defaultprofile" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/activity_vertical_margin">
-
-                <ImageView
-                    android:id="@+id/monday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/monday"/>
-                <ImageView
-                    android:id="@+id/tuesday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/tuesday"/>
-                <ImageView
-                    android:id="@+id/wednesday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/wednesday"/>
-                <ImageView
-                    android:id="@+id/thursday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/thursday"/>
-                <ImageView
-                    android:id="@+id/friday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/friday"/>
-                <ImageView
-                    android:id="@+id/saturday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/saturday"/>
-                <ImageView
-                    android:id="@+id/sunday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/sunday"/>
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/profileName"
                 android:layout_width="match_parent"
@@ -114,12 +64,26 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="TextView" />
 
-            <Button
-                android:id="@+id/becomeStudent"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Become a Student !!!" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/acceptBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/accept" />
+
+                <Button
+                    android:id="@+id/rejectBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/reject" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
