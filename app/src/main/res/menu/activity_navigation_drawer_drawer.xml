@@ -15,25 +15,29 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="Find" /> <!-- CHANGE TO STRINGS.XML -->
         <item
-            android:id="@+id/pending"
+            android:id="@+id/myStudentsPending"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="PendingTest" /> <!-- CHANGE TO STRINGS.XML -->
+            android:title="My Students (Pending)" /> <!-- CHANGE TO STRINGS.XML -->
         <item
-            android:id="@+id/accepted"
+            android:id="@+id/myStudentsAccepted"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="AcceptedTest" /> <!-- CHANGE TO STRINGS.XML -->
+            android:title="My Students (Accepted)" /> <!-- CHANGE TO STRINGS.XML -->
         <item
-            android:id="@+id/rejected"
+            android:id="@+id/myStudentsRejected"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="RejectedTest" /> <!-- CHANGE TO STRINGS.XML -->
+            android:title="My Students (Rejected)" /> <!-- CHANGE TO STRINGS.XML -->
         <item
-            android:id="@+id/myTutors"
+            android:id="@+id/myTutorsPending"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="My Tutors" />
+            android:title="My Tutors (Pending) " /> <!-- CHANGE TO STRINGS.XML -->
         <item
-            android:id="@+id/myStudents"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="My Students" />
+            android:id="@+id/myTutorsAccepted"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="My Tutors (Accepted) " /> <!-- CHANGE TO STRINGS.XML -->
+        <item
+            android:id="@+id/myTutorsRejected"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="My Tutors (Rejected) " /> <!-- CHANGE TO STRINGS.XML -->
     </group>
 
     <item android:title="Communicate">

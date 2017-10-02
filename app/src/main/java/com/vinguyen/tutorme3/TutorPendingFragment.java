@@ -19,11 +19,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class AcceptedFragment extends Fragment {
+
+public class TutorPendingFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> arrayAdapter;
     private ArrayAdapter arrayAdapterID;
-    private String userID;
+    private String userID, userIDCurrent;
     private Activity activity;
     DatabaseReference databaseRef;
     ArrayList<String> tutors;
@@ -33,7 +34,7 @@ public class AcceptedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_accepted, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_tutor_pending, container, false);
         activity = getActivity();
 
         databaseRef = FirebaseDatabase.getInstance().getReference();
@@ -43,13 +44,11 @@ public class AcceptedFragment extends Fragment {
         tutorsID = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
-                        if (student.getValue().equals("accepted")) {
-                            compareUsers(student);
-                        }
+                        checkIfTutor(student.getKey().toString());
                     }
                 }
 
@@ -67,7 +66,7 @@ public class AcceptedFragment extends Fragment {
                                     int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putString("message", tutorsID.get(position));
-                StudentProfileViewFragment fragment = new StudentProfileViewFragment();
+                TutorProfileViewFragment fragment = new TutorProfileViewFragment();
                 fragment.setArguments(bundle);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)
@@ -80,14 +79,13 @@ public class AcceptedFragment extends Fragment {
         return rootView;
     }
 
-    public void compareUsers(final DataSnapshot student) {
+    public void compareUsers(final String tutorID) {
         databaseRef.child("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.getKey().equals(student.getKey())) {
-
-                        showData(student);
+                    if (ds.getKey().equals(tutorID)) {
+                        showData(tutorID);
                     }
                 }
             }
@@ -98,13 +96,13 @@ public class AcceptedFragment extends Fragment {
         });
     }
 
-    public void showData(final DataSnapshot student) {
+    public void showData(final String tutorID) {
         FirebaseDatabase.getInstance().getReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserEntity userEntity = new UserEntity();
                 tutors.clear();
-                String key = student.getKey();
+                String key = tutorID;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.hasChild(key)) {
                         userEntity.setName(ds.child(key).getValue(UserEntity.class).getName());
@@ -126,4 +124,24 @@ public class AcceptedFragment extends Fragment {
         });
     }
 
+    public void checkIfTutor (final String tutorID) {
+        if (userID != null) {
+            userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(tutorID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot student : dataSnapshot.getChildren()) {
+                        if (student.getValue().equals("pending") && student.getKey().equals(userIDCurrent)) {
+                            compareUsers(tutorID);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
 }

@@ -140,32 +140,42 @@ public class NavigationDrawerActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-        } else if (id == R.id.myTutors) {
-            MyTutorsFragment fragment = new MyTutorsFragment();
+        } else if (id == R.id.myStudentsPending) {
+            StudentPendingFragment fragment = new StudentPendingFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-        } else if (id == R.id.pending) {
-            PendingFragment fragment = new PendingFragment();
+        } else if (id == R.id.myStudentsAccepted) {
+            StudentAcceptedFragment fragment = new StudentAcceptedFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-        } else if (id == R.id.accepted) {
-            AcceptedFragment fragment = new AcceptedFragment();
+        } else if (id == R.id.myStudentsRejected) {
+            StudentRejectedFragment fragment = new StudentRejectedFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-        } else if (id == R.id.rejected) {
-            RejectedFragment fragment = new RejectedFragment();
+        } else if (id == R.id.myTutorsPending) {
+            TutorPendingFragment fragment = new TutorPendingFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-        } else if (id == R.id.myStudents) {
-
+        } else if (id == R.id.myTutorsAccepted) {
+            TutorAcceptedFragment fragment = new TutorAcceptedFragment();
+            android.support.v4.app.FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
+        } else if (id == R.id.myTutorsRejected) {
+            StudentRejectedFragment fragment = new StudentRejectedFragment();
+            android.support.v4.app.FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

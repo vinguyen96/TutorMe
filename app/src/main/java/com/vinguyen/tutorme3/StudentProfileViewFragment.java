@@ -52,6 +52,7 @@ public class StudentProfileViewFragment extends Fragment {
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
+        profileContact.setVisibility(View.GONE);
 
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
 
@@ -107,7 +108,7 @@ public class StudentProfileViewFragment extends Fragment {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
-                    PendingFragment fragment = new PendingFragment();
+                    StudentPendingFragment fragment = new StudentPendingFragment();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
                             .commit();
@@ -120,13 +121,15 @@ public class StudentProfileViewFragment extends Fragment {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("rejected");
-                    PendingFragment fragment = new PendingFragment();
+                    StudentPendingFragment fragment = new StudentPendingFragment();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
                             .commit();
                 }
             }
         });
+
+        checkIfTutor();
         return rootView;
     }
 
@@ -159,6 +162,38 @@ public class StudentProfileViewFragment extends Fragment {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     Glide.with(getActivity()).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                }
+            });
+        }
+    }
+
+    public void checkIfTutor () {
+        databaseRef = FirebaseDatabase.getInstance().getReference();
+        if (userID != null) {
+            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot tutor : dataSnapshot.getChildren()) {
+                        ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(tutor.getKey()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot student : dataSnapshot.getChildren()) {
+                                    if (student.getValue().equals("accepted")) {
+                                        profileContact.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
             });
         }

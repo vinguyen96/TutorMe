@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,15 +31,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import static android.app.Activity.RESULT_OK;
-
 
 public class TutorProfileViewFragment extends Fragment {
 
     private FirebaseDatabase userDatabaseCreate;
-    private DatabaseReference userReference;
+    private DatabaseReference userReference, databaseRef;
     private FirebaseAuth.AuthStateListener authListener;
-    private TextView profileName, profileAge, profileDegree, profileContact;
+    private TextView profileName, profileAge, profileDegree, profileContact, reqAccepted, reqSent, reqRejected;
     private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
     private String userID, currentUserID;
     private StorageReference myRef, defaultRef, storageRef;
@@ -95,6 +92,13 @@ public class TutorProfileViewFragment extends Fragment {
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
+        reqAccepted =(TextView) rootView.findViewById(R.id.reqAccepted);
+        reqSent =(TextView) rootView.findViewById(R.id.reqSent);
+        reqRejected =(TextView) rootView.findViewById(R.id.reqRejected);
+        profileContact.setVisibility(View.GONE);
+        reqAccepted.setVisibility(View.GONE);
+        reqSent.setVisibility(View.GONE);
+        reqRejected.setVisibility(View.GONE);
 
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
 
@@ -120,9 +124,6 @@ public class TutorProfileViewFragment extends Fragment {
             });
         }
         becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
-        if (currentUserID.equals(userID)) {
-            becomeStudent.setVisibility(View.GONE);
-        }
 
         userDatabase=FirebaseDatabase.getInstance();
         userDatabaseReference=userDatabase.getReference("Courses");
@@ -166,6 +167,8 @@ public class TutorProfileViewFragment extends Fragment {
         getSundayAvailability();
         Log.d("TEST", sundayAvailability);
 
+        checkIfTutor();
+
         return rootView;
     }
 
@@ -192,12 +195,12 @@ public class TutorProfileViewFragment extends Fragment {
             myRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    Glide.with(getActivity()).using(new FirebaseImageLoader()).load(myRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                    Glide.with(activity).using(new FirebaseImageLoader()).load(myRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Glide.with(getActivity()).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                    Glide.with(activity).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
                 }
             });
         }
@@ -431,6 +434,40 @@ public class TutorProfileViewFragment extends Fragment {
 
                 }
             });
+        }
+    }
+    public void checkIfTutor () {
+        databaseRef = FirebaseDatabase.getInstance().getReference();
+        if (userID != null) {
+            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    for (DataSnapshot tutor : dataSnapshot.getChildren()) {
+                        Log.d("WHYYY", tutor.getValue() + " " + tutor.getKey() + " " + userIDCurrent);
+                        if (currentUserID.equals(userID)) {
+                            becomeStudent.setVisibility(View.GONE);
+                        }
+                        else if (tutor.getValue().equals("pending") && tutor.getKey().equals(userIDCurrent)) {
+                            reqSent.setVisibility(View.VISIBLE);
+                            becomeStudent.setVisibility(View.GONE);
+                        } else if (tutor.getValue().equals("rejected")) {
+                            reqRejected.setVisibility(View.VISIBLE);
+                            becomeStudent.setVisibility(View.GONE);
+                        } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userIDCurrent)) {
+                            profileContact.setVisibility(View.VISIBLE);
+                            reqAccepted.setVisibility(View.VISIBLE);
+                            becomeStudent.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
         }
     }
 }

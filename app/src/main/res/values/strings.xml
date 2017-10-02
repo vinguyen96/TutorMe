@@ -44,4 +44,7 @@
     <string name="hint_course">Course</string>
     <string name="accept">Accept</string>
     <string name="reject">Reject</string>
+    <string name="reqSent">Request Sent</string>
+    <string name="reqAccepted">Request Accepted</string>
+    <string name="reqRejected">Request Rejected</string>
 </resources>
