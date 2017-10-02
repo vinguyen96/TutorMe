@@ -48,6 +48,7 @@ public class FindTutorFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot tutor : dataSnapshot.getChildren()) {
+                    tutors.clear();
                     compareUsers(tutor);
                 }
             }

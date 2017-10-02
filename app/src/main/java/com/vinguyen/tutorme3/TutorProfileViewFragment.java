@@ -439,19 +439,19 @@ public class TutorProfileViewFragment extends Fragment {
     public void checkIfTutor () {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     for (DataSnapshot tutor : dataSnapshot.getChildren()) {
                         Log.d("WHYYY", tutor.getValue() + " " + tutor.getKey() + " " + userIDCurrent);
-                        if (currentUserID.equals(userID)) {
+                        if (userIDCurrent.equals(userID)) {
                             becomeStudent.setVisibility(View.GONE);
                         }
                         else if (tutor.getValue().equals("pending") && tutor.getKey().equals(userIDCurrent)) {
                             reqSent.setVisibility(View.VISIBLE);
                             becomeStudent.setVisibility(View.GONE);
-                        } else if (tutor.getValue().equals("rejected")) {
+                        } else if (tutor.getValue().equals("rejected") && tutor.getKey().equals(userIDCurrent)) {
                             reqRejected.setVisibility(View.VISIBLE);
                             becomeStudent.setVisibility(View.GONE);
                         } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userIDCurrent)) {

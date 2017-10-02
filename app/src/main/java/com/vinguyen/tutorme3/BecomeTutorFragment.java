@@ -75,9 +75,9 @@ public class BecomeTutorFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference userDatabaseReference = userDatabase.getReference("Courses");
+                DatabaseReference userDatabaseReference = userDatabase.getReference();
                 String course = courseAC.getText().toString().trim();
-                userDatabaseReference.child(course).child("Tutors").child(userID).setValue(name);
+                userDatabaseReference.child("Courses").child(course).child("Tutors").child(userID).setValue(name);
 
             }
         });

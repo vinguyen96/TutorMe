@@ -44,7 +44,7 @@ public class TutorAcceptedFragment extends Fragment {
         tutorsID = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
@@ -101,7 +101,6 @@ public class TutorAcceptedFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserEntity userEntity = new UserEntity();
-                tutors.clear();
                 String key = tutorID;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.hasChild(key)) {
@@ -127,7 +126,7 @@ public class TutorAcceptedFragment extends Fragment {
     public void checkIfTutor (final String tutorID) {
         if (userID != null) {
             userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(tutorID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(tutorID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {

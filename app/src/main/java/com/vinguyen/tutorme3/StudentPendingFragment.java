@@ -49,7 +49,7 @@ public class StudentPendingFragment extends Fragment {
         tutorsID = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
@@ -110,7 +110,6 @@ public class StudentPendingFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserEntity userEntity = new UserEntity();
-                tutors.clear();
                 String key = student.getKey();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.hasChild(key)) {

@@ -31,7 +31,7 @@ public class StudentProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, userDatabaseReference, databaseRef;
     private TextView profileName, profileAge, profileDegree, profileContact;
-    private ImageView imgView;
+    private ImageView imgView, upVote, downVote;
     private String userID;
     private Button acceptBtn, rejectBtn;
     private StorageReference myRef, defaultRef, storageRef;
@@ -77,20 +77,25 @@ public class StudentProfileViewFragment extends Fragment {
         }
         acceptBtn = (Button) rootView.findViewById(R.id.acceptBtn);
         rejectBtn = (Button) rootView.findViewById(R.id.rejectBtn);
+        upVote = (ImageView) rootView.findViewById(R.id.upVote);
+        downVote = (ImageView) rootView.findViewById(R.id.downVote);
         userDatabase=FirebaseDatabase.getInstance();
-        userDatabaseReference=userDatabase.getReference("Courses");
+        userDatabaseReference=userDatabase.getReference();
 
         databaseRef = FirebaseDatabase.getInstance().getReference();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
                         Log.d("CHECKPOINT10", student.getKey().toString() + " " + student.getValue().toString());
                         if (student.getValue().equals("pending") == false) {
-
                             acceptBtn.setVisibility(View.GONE);
                             rejectBtn.setVisibility(View.GONE);
+                        }
+                        else {
+                            acceptBtn.setVisibility(View.VISIBLE);
+                            rejectBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -129,7 +134,7 @@ public class StudentProfileViewFragment extends Fragment {
             }
         });
 
-        checkIfTutor();
+        checkIfStudent();
         return rootView;
     }
 
@@ -167,35 +172,31 @@ public class StudentProfileViewFragment extends Fragment {
         }
     }
 
-    public void checkIfTutor () {
+    public void checkIfStudent () {
         databaseRef = FirebaseDatabase.getInstance().getReference();
+        userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot tutor : dataSnapshot.getChildren()) {
-                        ValueEventListener valueEventListener = databaseRef.child("Courses").child("INFS1609").child("Tutors").child(tutor.getKey()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot student : dataSnapshot.getChildren()) {
-                                    if (student.getValue().equals("accepted")) {
-                                        profileContact.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                        Log.d("IDK", userIDCurrent + " " + userID + " " + tutor.getKey() + " " + tutor.getValue());
+                        if (tutor.getValue().equals("pending") && tutor.getKey().equals(userID)) {
+                            profileContact.setVisibility(View.GONE);
+                        } else if (tutor.getValue().equals("rejected") && tutor.getKey().equals(userID)) {
+                            profileAge.setVisibility(View.GONE);
+                        } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userID)) {
+                            profileContact.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
+
         }
     }
 }
