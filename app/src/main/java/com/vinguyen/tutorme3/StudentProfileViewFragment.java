@@ -136,42 +136,55 @@ public class StudentProfileViewFragment extends Fragment {
             }
         });
 
-        FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
-        DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
-        userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long count = dataSnapshot.getChildrenCount();
-                noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
-            }
+        FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReference = userDatabase.getReference();
+        userDatabaseReference.child("Users").child(userID).child("TutorLikes")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.child(userIDCurrent).exists()) {
+                            likeBtn.setText("UnLike");
+                        } else {
+                            likeBtn.setText("Like");
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-        FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
-        DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
-        userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long count = dataSnapshot.getChildrenCount();
-                noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                    }
+                });
 
         likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference userDatabaseReference = userDatabase.getReference();
-                userDatabaseReference.child("Users").child(userID).child("TutorLikes").child(userIDCurrent).setValue("like");
+                userDatabaseReference.child("Users").child(userID).child("TutorLikes").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.child(userIDCurrent).exists()) {
+                            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                            DatabaseReference userDatabaseReference = userDatabase.getReference();
+                            userDatabaseReference.child("Users").child(userID).child("TutorLikes").child(userIDCurrent).removeValue();
+                        }
+                        else {
+                            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                            DatabaseReference userDatabaseReference = userDatabase.getReference();
+                            userDatabaseReference.child("Users").child(userID).child("TutorLikes").child(userIDCurrent).setValue("like");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
+
+        getTutorLikes();
+        getStudentLikes();
 
         checkIfStudent();
         return rootView;
@@ -193,6 +206,38 @@ public class StudentProfileViewFragment extends Fragment {
             }
         }
 
+    }
+
+    public void getTutorLikes() {
+        FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
+        userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getStudentLikes() {
+        FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
+        userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public void refreshImage() {
