@@ -37,11 +37,11 @@ public class TutorProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, databaseRef;
     private FirebaseAuth.AuthStateListener authListener;
-    private TextView profileName, profileAge, profileDegree, profileContact, reqAccepted, reqSent, reqRejected;
+    private TextView profileName, profileAge, profileDegree, profileContact, reqAccepted, reqSent, reqRejected, noOfTutorLikes, noOfStudentLikes;
     private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
     private String userID, currentUserID;
     private StorageReference myRef, defaultRef, storageRef;
-    private Button becomeStudent;
+    private Button becomeStudent, likeBtn;
     private FirebaseDatabase userDatabase;
     private FirebaseAuth auth;
     private int PICK_IMAGE_REQUEST = 111;
@@ -88,6 +88,9 @@ public class TutorProfileViewFragment extends Fragment {
         };
         currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        noOfStudentLikes =(TextView) rootView.findViewById(R.id.noOfStudentLikes);
+        noOfTutorLikes =(TextView) rootView.findViewById(R.id.noOfTutorLikes);
+
         profileName=(TextView) rootView.findViewById(R.id.profileName);
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
@@ -123,7 +126,38 @@ public class TutorProfileViewFragment extends Fragment {
                 }
             });
         }
+
         becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
+        likeBtn=(Button)rootView.findViewById(R.id.like);
+        likeBtn.setVisibility(View.GONE);
+
+        FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
+        userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
+        userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         userDatabase=FirebaseDatabase.getInstance();
         userDatabaseReference=userDatabase.getReference("Courses");
@@ -172,6 +206,7 @@ public class TutorProfileViewFragment extends Fragment {
         return rootView;
     }
 
+
     private void showData(DataSnapshot dataSnapshot){
         for(DataSnapshot ds:dataSnapshot.getChildren()){
             UserEntity userEntity=new UserEntity();
@@ -187,8 +222,16 @@ public class TutorProfileViewFragment extends Fragment {
                 profileContact.setText("Contact: " + userEntity.getContact());
             }
         }
-
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference userDatabaseReference = userDatabase.getReference();
+                userDatabaseReference.child("Users").child(userID).child("StudentLikes").child(userIDCurrent).setValue("like");
+            }
+        });
     }
+
 
     public void refreshImage() {
         if (getActivity() != null) {
@@ -444,7 +487,6 @@ public class TutorProfileViewFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     for (DataSnapshot tutor : dataSnapshot.getChildren()) {
-                        Log.d("WHYYY", tutor.getValue() + " " + tutor.getKey() + " " + userIDCurrent);
                         if (userIDCurrent.equals(userID)) {
                             becomeStudent.setVisibility(View.GONE);
                         }
@@ -457,6 +499,7 @@ public class TutorProfileViewFragment extends Fragment {
                         } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userIDCurrent)) {
                             profileContact.setVisibility(View.VISIBLE);
                             reqAccepted.setVisibility(View.VISIBLE);
+                            likeBtn.setVisibility(View.VISIBLE);
                             becomeStudent.setVisibility(View.GONE);
                         }
                     }

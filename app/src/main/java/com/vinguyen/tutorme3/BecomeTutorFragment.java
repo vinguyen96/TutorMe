@@ -78,7 +78,6 @@ public class BecomeTutorFragment extends Fragment {
                 DatabaseReference userDatabaseReference = userDatabase.getReference();
                 String course = courseAC.getText().toString().trim();
                 userDatabaseReference.child("Courses").child(course).child("Tutors").child(userID).setValue(name);
-
             }
         });
 

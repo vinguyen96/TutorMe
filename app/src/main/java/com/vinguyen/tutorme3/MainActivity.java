@@ -47,7 +47,7 @@ public class MainActivity extends Fragment {
             changeEmail, changePassword, sendEmail, remove, signOut;
 
     private EditText oldEmail, newEmail, password, newPassword;
-    private TextView profileName, profileAge, profileDegree, profileContact;
+    private TextView profileName, profileAge, profileDegree, profileContact, noOfStudentLikes, noOfTutorLikes;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -113,6 +113,9 @@ public class MainActivity extends Fragment {
         password = (EditText) rootView.findViewById(R.id.password);
         newPassword = (EditText) rootView.findViewById(R.id.newPassword);
 
+        noOfStudentLikes =(TextView) rootView.findViewById(R.id.noOfStudentLikes);
+        noOfTutorLikes =(TextView) rootView.findViewById(R.id.noOfTutorLikes);
+
         profileName=(TextView) rootView.findViewById(R.id.profileName);
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
@@ -154,6 +157,35 @@ public class MainActivity extends Fragment {
                 public void onCancelled(DatabaseError databaseError) { }
             });
         }
+
+        FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
+        userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
+        userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         getMondayAvailability();
         Log.d("TEST", mondayAvailability);
         getTuesdayAvailability();

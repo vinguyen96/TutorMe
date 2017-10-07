@@ -88,6 +88,24 @@
                 android:text="TextView" />
 
             <TextView
+                android:id="@+id/noOfTutorLikes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:text="Tutors that like me: 0" />
+
+            <TextView
+                android:id="@+id/noOfStudentLikes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:text="Students that like me: 0" />
+
+            <TextView
                 android:id="@+id/profileContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,6 +166,14 @@
                 android:layout_weight="1"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/reqRejected" />
+            <Button
+                android:id="@+id/like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:text="Like" />
         </LinearLayout>
     </ScrollView>
 

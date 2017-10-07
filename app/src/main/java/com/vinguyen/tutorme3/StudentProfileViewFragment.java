@@ -30,10 +30,10 @@ import com.google.firebase.storage.StorageReference;
 public class StudentProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, userDatabaseReference, databaseRef;
-    private TextView profileName, profileAge, profileDegree, profileContact;
-    private ImageView imgView, upVote, downVote;
+    private TextView profileName, profileAge, profileDegree, profileContact,noOfStudentLikes,noOfTutorLikes;
+    private ImageView imgView;
     private String userID;
-    private Button acceptBtn, rejectBtn;
+    private Button acceptBtn, rejectBtn, likeBtn;
     private StorageReference myRef, defaultRef, storageRef;
     private FirebaseDatabase userDatabase;
     private String userIDCurrent;
@@ -48,6 +48,9 @@ public class StudentProfileViewFragment extends Fragment {
         }
         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        noOfStudentLikes =(TextView) rootView.findViewById(R.id.noOfStudentLikes);
+        noOfTutorLikes =(TextView) rootView.findViewById(R.id.noOfTutorLikes);
+
         profileName=(TextView) rootView.findViewById(R.id.profileName);
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
@@ -55,6 +58,8 @@ public class StudentProfileViewFragment extends Fragment {
         profileContact.setVisibility(View.GONE);
 
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
+        likeBtn=(Button)rootView.findViewById(R.id.like);
+        likeBtn.setVisibility(View.GONE);
 
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
@@ -77,8 +82,6 @@ public class StudentProfileViewFragment extends Fragment {
         }
         acceptBtn = (Button) rootView.findViewById(R.id.acceptBtn);
         rejectBtn = (Button) rootView.findViewById(R.id.rejectBtn);
-        upVote = (ImageView) rootView.findViewById(R.id.upVote);
-        downVote = (ImageView) rootView.findViewById(R.id.downVote);
         userDatabase=FirebaseDatabase.getInstance();
         userDatabaseReference=userDatabase.getReference();
 
@@ -87,8 +90,7 @@ public class StudentProfileViewFragment extends Fragment {
             ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot student : dataSnapshot.getChildren()) {
-                        Log.d("CHECKPOINT10", student.getKey().toString() + " " + student.getValue().toString());
+                    for (DataSnapshot student : dataSnapshot.getChildren()) {;
                         if (student.getValue().equals("pending") == false) {
                             acceptBtn.setVisibility(View.GONE);
                             rejectBtn.setVisibility(View.GONE);
@@ -131,6 +133,43 @@ public class StudentProfileViewFragment extends Fragment {
                             .replace(R.id.fragment_container, fragment)
                             .commit();
                 }
+            }
+        });
+
+        FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
+        userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
+        DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
+        userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference userDatabaseReference = userDatabase.getReference();
+                userDatabaseReference.child("Users").child(userID).child("TutorLikes").child(userIDCurrent).setValue("like");
             }
         });
 
@@ -187,6 +226,7 @@ public class StudentProfileViewFragment extends Fragment {
                             profileAge.setVisibility(View.GONE);
                         } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userID)) {
                             profileContact.setVisibility(View.VISIBLE);
+                            likeBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 }
