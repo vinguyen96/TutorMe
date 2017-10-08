@@ -1,5 +1,8 @@
 package com.vinguyen.tutorme3;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,12 +34,21 @@ public class StudentProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, userDatabaseReference, databaseRef;
     private TextView profileName, profileAge, profileDegree, profileContact,noOfStudentLikes,noOfTutorLikes;
-    private ImageView imgView;
+    private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
     private String userID;
     private Button acceptBtn, rejectBtn, likeBtn;
     private StorageReference myRef, defaultRef, storageRef;
     private FirebaseDatabase userDatabase;
+    private String mondayAvailability = "no";
+    private String tuesdayAvailability = "no";
+    private String wednesdayAvailability = "no";
+    private String thursdayAvailability = "no";
+    private String fridayAvailability = "no";
+    private String saturdayAvailability = "no";
+    private String sundayAvailability = "no";
+    private Bitmap bImageMonday;
     private String userIDCurrent;
+    private Activity activity;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +58,7 @@ public class StudentProfileViewFragment extends Fragment {
         if (bundle != null) {
             userID = bundle.getString("message");
         }
+        activity = getActivity();
         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         noOfStudentLikes =(TextView) rootView.findViewById(R.id.noOfStudentLikes);
@@ -60,6 +73,22 @@ public class StudentProfileViewFragment extends Fragment {
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
         likeBtn=(Button)rootView.findViewById(R.id.like);
         likeBtn.setVisibility(View.GONE);
+
+        mondayView = (ImageView) rootView.findViewById(R.id.monday);
+        tuesdayView = (ImageView) rootView.findViewById(R.id.tuesday);
+        wednesdayView = (ImageView) rootView.findViewById(R.id.wednesday);
+        thursdayView = (ImageView) rootView.findViewById(R.id.thursday);
+        fridayView = (ImageView) rootView.findViewById(R.id.friday);
+        saturdayView = (ImageView) rootView.findViewById(R.id.saturday);
+        sundayView = (ImageView) rootView.findViewById(R.id.sunday);
+
+        getMondayAvailability();
+        getTuesdayAvailability();
+        getWednesdayAvailability();
+        getThursdayAvailability();
+        getFridayAvailability();
+        getSaturdayAvailability();
+        getSundayAvailability();
 
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
@@ -251,6 +280,236 @@ public class StudentProfileViewFragment extends Fragment {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     Glide.with(getActivity()).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imgView);
+                }
+            });
+        }
+    }
+
+    public void getMondayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference userDatabaseReference = userDatabase.getReference();
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setMonday(ds.child(userID).getValue(UserEntity.class).getMonday());
+                            if (availability.getMonday().equals("yes")) {
+                                mondayAvailability = "yes";
+                                bImageMonday = BitmapFactory.decodeResource(activity.getResources(), R.drawable.mondayfilled);
+                            }
+                            if (availability.getMonday().equals("no")) {
+                                mondayAvailability = "no";
+                                bImageMonday = BitmapFactory.decodeResource(activity.getResources(), R.drawable.monday);
+                            }
+                            mondayView.setImageBitmap(bImageMonday);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getTuesdayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setTuesday(ds.child(userID).getValue(UserEntity.class).getTuesday());
+                            if (availability.getTuesday().equals("yes")) {
+                                tuesdayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.tuesdayfilled);
+                                tuesdayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getTuesday().equals("no")) {
+                                tuesdayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.tuesday);
+                                tuesdayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getWednesdayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setWednesday(ds.child(userID).getValue(UserEntity.class).getWednesday());
+                            if (availability.getWednesday().equals("yes")) {
+                                wednesdayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.wednesdayfilled);
+                                wednesdayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getWednesday().equals("no")) {
+                                wednesdayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.wednesday);
+                                wednesdayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
+    }
+
+    public void getThursdayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setThursday(ds.child(userID).getValue(UserEntity.class).getThursday());
+                            if (availability.getThursday().equals("yes")) {
+                                thursdayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.thursdayfilled);
+                                thursdayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getThursday().equals("no")) {
+                                thursdayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.thursday);
+                                thursdayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getFridayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setFriday(ds.child(userID).getValue(UserEntity.class).getFriday());
+                            if (availability.getFriday().equals("yes")) {
+                                fridayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.fridayfilled);
+                                fridayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getFriday().equals("no")) {
+                                fridayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.friday);
+                                fridayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getSaturdayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setSaturday(ds.child(userID).getValue(UserEntity.class).getSaturday());
+                            if (availability.getSaturday().equals("yes")) {
+                                saturdayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.saturdayfilled);
+                                saturdayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getSaturday().equals("no")) {
+                                saturdayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.saturday);
+                                saturdayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getSundayAvailability() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+            userDatabaseReference = userDatabase.getReference();
+
+            userDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        UserEntity availability = new UserEntity();
+                        if (ds.hasChild(userID)) {
+                            availability.setSunday(ds.child(userID).getValue(UserEntity.class).getSunday());
+                            if (availability.getSunday().equals("yes")) {
+                                sundayAvailability = "yes";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.sundayfilled);
+                                sundayView.setImageBitmap(bImage);
+                            }
+                            if (availability.getSunday().equals("no")) {
+                                sundayAvailability = "no";
+                                Bitmap bImage = BitmapFactory.decodeResource(activity.getResources(), R.drawable.sunday);
+                                sundayView.setImageBitmap(bImage);
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
             });
         }

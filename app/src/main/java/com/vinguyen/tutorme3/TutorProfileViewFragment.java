@@ -159,19 +159,12 @@ public class TutorProfileViewFragment extends Fragment {
         sundayView = (ImageView) rootView.findViewById(R.id.sunday);
 
         getMondayAvailability();
-        Log.d("TEST", mondayAvailability);
         getTuesdayAvailability();
-        Log.d("TEST", tuesdayAvailability);
         getWednesdayAvailability();
-        Log.d("TEST", wednesdayAvailability);
         getThursdayAvailability();
-        Log.d("TEST", thursdayAvailability);
         getFridayAvailability();
-        Log.d("TEST", fridayAvailability);
         getSaturdayAvailability();
-        Log.d("TEST", saturdayAvailability);
         getSundayAvailability();
-        Log.d("TEST", sundayAvailability);
 
         checkIfTutor();
 

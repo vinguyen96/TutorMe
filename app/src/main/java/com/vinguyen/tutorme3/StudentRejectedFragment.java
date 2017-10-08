@@ -69,7 +69,7 @@ public class StudentRejectedFragment extends Fragment {
                 bundle.putString("message", tutorsID.get(position));
                 StudentProfileViewFragment fragment = new StudentProfileViewFragment();
                 fragment.setArguments(bundle);
-                getFragmentManager().beginTransaction()
+                getParentFragment().getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .commit();
                 //Toast.makeText(getActivity(), tutorsID.get(position), Toast.LENGTH_SHORT).show();
