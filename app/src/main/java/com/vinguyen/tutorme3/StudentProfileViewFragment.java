@@ -111,18 +111,20 @@ public class StudentProfileViewFragment extends Fragment {
         }
         acceptBtn = (Button) rootView.findViewById(R.id.acceptBtn);
         rejectBtn = (Button) rootView.findViewById(R.id.rejectBtn);
+        acceptBtn.setVisibility(View.GONE);
+        rejectBtn.setVisibility(View.GONE);
+
         userDatabase=FirebaseDatabase.getInstance();
         userDatabaseReference=userDatabase.getReference();
 
-        databaseRef = FirebaseDatabase.getInstance().getReference();
+        /*databaseRef = FirebaseDatabase.getInstance().getReference();
         if (userID != null) {
             ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {;
                         if (student.getValue().equals("pending") == false) {
-                            acceptBtn.setVisibility(View.GONE);
-                            rejectBtn.setVisibility(View.GONE);
+
                         }
                         else {
                             acceptBtn.setVisibility(View.VISIBLE);
@@ -136,7 +138,7 @@ public class StudentProfileViewFragment extends Fragment {
 
                 }
             });
-        }
+        }*/
 
         acceptBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -144,8 +146,8 @@ public class StudentProfileViewFragment extends Fragment {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
-                    StudentPendingFragment fragment = new StudentPendingFragment();
-                    getFragmentManager().beginTransaction()
+                    MyStudentTabFragment fragment = new MyStudentTabFragment();
+                    getParentFragment().getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
                             .commit();
                 }
@@ -526,6 +528,8 @@ public class StudentProfileViewFragment extends Fragment {
                         Log.d("IDK", userIDCurrent + " " + userID + " " + tutor.getKey() + " " + tutor.getValue());
                         if (tutor.getValue().equals("pending") && tutor.getKey().equals(userID)) {
                             profileContact.setVisibility(View.GONE);
+                            acceptBtn.setVisibility(View.VISIBLE);
+                            rejectBtn.setVisibility(View.VISIBLE);
                         } else if (tutor.getValue().equals("rejected") && tutor.getKey().equals(userID)) {
                             profileAge.setVisibility(View.GONE);
                         } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userID)) {
