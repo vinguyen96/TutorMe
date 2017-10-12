@@ -2,19 +2,23 @@ package com.vinguyen.tutorme3;
 
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MyTutorTabFragment extends Fragment {
-
-    private FragmentTabHost mTabHost;
 
     //Mandatory Constructor
     public MyTutorTabFragment() {
@@ -30,18 +34,51 @@ public class MyTutorTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_my_tutor_tab,container, false);
 
-
-        mTabHost = (FragmentTabHost)rootView.findViewById(android.R.id.tabhost);
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
-
-        mTabHost.addTab(mTabHost.newTabSpec("Pending").setIndicator("Pending"),
-                TutorPendingFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("Accepted").setIndicator("Accepted"),
-                TutorAcceptedFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("Rejected").setIndicator("Rejected"),
-                TutorRejectedFragment.class, null);
+        ViewPager viewPager = (ViewPager)rootView.findViewById(R.id.pager);
+        setupViewPager(viewPager);
+        TabLayout tabs = (TabLayout)rootView.findViewById(R.id.fixture_tabs);
+        tabs.setupWithViewPager(viewPager);
 
 
         return rootView;
     }
+
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getChildFragmentManager());
+        adapter.addFragment(new TutorPendingFragment(), "Pending");
+        adapter.addFragment(new TutorAcceptedFragment(), "Accepted");
+        adapter.addFragment(new TutorRejectedFragment(), "Rejected");
+        viewPager.setAdapter(adapter);
+
+    }
+
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
 }
+

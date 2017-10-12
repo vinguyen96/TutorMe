@@ -75,7 +75,15 @@ public class MainActivity extends Fragment {
                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
+
+
         activity = getActivity();
+
+        rootView.setOnTouchListener(new OnSwipeTouchListener(activity) {
+            public void onSwipeTop() {
+                Toast.makeText(activity, "top", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();

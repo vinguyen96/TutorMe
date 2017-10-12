@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TutorMe</string>
+    <string name="btn_sign_out">로그 아웃</string>
+    <string name="title_activity_login"></string>
+    <string name="change_email"></string>
+</resources>

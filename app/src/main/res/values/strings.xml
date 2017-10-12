@@ -1,4 +1,7 @@
 <resources>
+    <string name="english">English</string>
+    <string name="cantonese">Cantonese</string>
+    <string name="korean">Korean</string>
     <string name="app_name">TutorMe</string>
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>

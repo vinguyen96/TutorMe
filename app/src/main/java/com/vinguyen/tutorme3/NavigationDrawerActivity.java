@@ -1,5 +1,7 @@
 package com.vinguyen.tutorme3;
 
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Locale;
+
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,11 +32,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private TextView navName, navEmail;
     private String userID, emailString;
     private FirebaseUser user;
+    private static final String FILE_NAME = "file_lang";
+    private static final String KEY_LANG = "key_lang";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
+        loadLanguage();
 
         MainActivity fragment = new MainActivity();
         android.support.v4.app.FragmentTransaction fragmentTransaction =
@@ -101,7 +108,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -114,7 +121,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -181,6 +188,54 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
         user = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    private void saveLanguage(String lang) {
+
+
+        // we can use this method to save language
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(KEY_LANG, lang);
+        editor.apply();
+        // we have saved
+        // recreate activity after saving to load the new language, this is the same
+        // as refreshing activity to load new language
+
+        recreate();
+
+    }
+
+    private void loadLanguage() {
+        // we can use this method to load language,
+        // this method should be called before setContentView() method of the onCreate method
+
+        Locale locale = new Locale(getLangCode());
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    private String getLangCode() {
+        SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, "en");
+        // save english 'en' as the default language
+        return langCode;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_english:
+                saveLanguage("en");
+                break;
+
+            case R.id.action_korean:
+                saveLanguage("ko");
+                break;
+        }
+        return true;
     }
 
 }
