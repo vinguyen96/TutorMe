@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
@@ -44,17 +45,17 @@ import static android.app.Activity.RESULT_OK;
 public class MainActivity extends Fragment {
 
     private Button btnChangeEmail, btnChangePassword, btnSendResetEmail, btnRemoveUser,
-            changeEmail, changePassword, sendEmail, remove, signOut;
+            changeEmail, changePassword, sendEmail, remove, signOut, btnSaveEdit;
 
-    private EditText oldEmail, newEmail, password, newPassword;
-    private TextView profileName, profileAge, profileDegree, profileContact, noOfStudentLikes, noOfTutorLikes;
+    private EditText oldEmail, newEmail, password, newPassword, hidden1, hidden2, hidden3, hidden4, hidden5;
+    private TextView profileName, profileAge, profileDegree, profileContact, profileDesc, noOfStudentLikes, noOfTutorLikes;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     private FirebaseDatabase userDatabase;
     private DatabaseReference userReference, userDBReference;
     private String userID;
-    private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
+    private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView, btnEditProfile;
     private int PICK_IMAGE_REQUEST = 111;
     private Uri filePath;
     private ProgressDialog uploadingPD;
@@ -128,6 +129,7 @@ public class MainActivity extends Fragment {
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
+        profileDesc=(TextView) rootView.findViewById(R.id.profileDesc);
 
         mondayView = (ImageView) rootView.findViewById(R.id.monday);
         tuesdayView = (ImageView) rootView.findViewById(R.id.tuesday);
@@ -515,6 +517,106 @@ public class MainActivity extends Fragment {
                 }
             }
         });
+        btnEditProfile = (ImageView) rootView.findViewById(R.id.btnEditProfile);
+        btnSaveEdit = (Button) rootView.findViewById(R.id.btnSaveProfile);
+        btnSaveEdit.setVisibility(View.GONE);
+
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            // @Override
+            //public void onClick(View v) {
+            //launch edit profile activity
+            //change the current text fields into editable text
+
+
+            public void onClick(View v) {
+                if (btnSaveEdit.isShown() == true) {
+                    btnSaveEdit.setVisibility(View.GONE);
+                }
+                else {
+                    btnSaveEdit.setVisibility(View.VISIBLE);
+                }
+
+                ViewSwitcher switcher1 = (ViewSwitcher)getView().findViewById(R.id.my_switcher1);
+                switcher1.showNext(); //or switcher.showPrevious();
+                TextView editName = (TextView) switcher1.findViewById(R.id.hidden_edit_view1);
+                String name = profileName.getText().toString();
+                editName.setText(name);
+
+                ViewSwitcher switcher2 = (ViewSwitcher)getView().findViewById(R.id.my_switcher2);
+                switcher2.showNext(); //or switcher.showPrevious();
+                TextView editAge = (TextView) switcher2.findViewById(R.id.hidden_edit_view2);
+                String age = profileAge.getText().toString();
+                editAge.setText(age);
+
+                ViewSwitcher switcher3 = (ViewSwitcher)getView().findViewById(R.id.my_switcher3);
+                switcher3.showNext(); //or switcher.showPrevious();
+                TextView editDegree = (TextView) switcher3.findViewById(R.id.hidden_edit_view3);
+                String degree = profileDegree.getText().toString();
+                editDegree.setText(degree);
+
+                ViewSwitcher switcher4 = (ViewSwitcher)getView().findViewById(R.id.my_switcher4);
+                switcher4.showNext(); //or switcher.showPrevious();
+                TextView editContact = (TextView) switcher4.findViewById(R.id.hidden_edit_view4);
+                String contact = profileContact.getText().toString();
+                editContact.setText(contact);
+
+                ViewSwitcher switcher5 = (ViewSwitcher)getView().findViewById(R.id.my_switcher5);
+                switcher5.showNext(); //or switcher.showPrevious();
+                TextView editDescription = (TextView) switcher5.findViewById(R.id.hidden_edit_view5);
+                String desc = profileDesc.getText().toString();
+                editDescription.setText(desc);
+
+            }
+        });
+        hidden1 = (EditText) rootView.findViewById(R.id.hidden_edit_view1);
+        hidden2 = (EditText) rootView.findViewById(R.id.hidden_edit_view2);
+        hidden3 = (EditText) rootView.findViewById(R.id.hidden_edit_view3);
+        hidden4 = (EditText) rootView.findViewById(R.id.hidden_edit_view4);
+        hidden5 = (EditText) rootView.findViewById(R.id.hidden_edit_view5);
+
+        btnSaveEdit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                btnSaveEdit.setVisibility(View.GONE);
+                //to switch back views
+                ViewSwitcher switcher1 = (ViewSwitcher) getView().findViewById(R.id.my_switcher1);
+                ViewSwitcher switcher2 = (ViewSwitcher) getView().findViewById(R.id.my_switcher2);
+                ViewSwitcher switcher3 = (ViewSwitcher) getView().findViewById(R.id.my_switcher3);
+                ViewSwitcher switcher4 = (ViewSwitcher) getView().findViewById(R.id.my_switcher4);
+                ViewSwitcher switcher5 = (ViewSwitcher) getView().findViewById(R.id.my_switcher5);
+
+                String newName = hidden1.getText().toString();
+                String newAge = hidden2.getText().toString();
+                String newDegree = hidden3.getText().toString();
+                String newContact = hidden4.getText().toString();
+                String newDesc = hidden5.getText().toString();
+
+                //savinng it to entity name
+                FirebaseDatabase userDatabaseProfile = FirebaseDatabase.getInstance();
+                DatabaseReference userDatabaseReferenceProfile = userDatabaseProfile.getReference();
+                userDatabaseReferenceProfile.child("Users").child(userID).child("name").setValue(newName);
+                //age
+                userDatabaseReferenceProfile.child("Users").child(userID).child("age").setValue(newAge);
+                //degree
+                userDatabaseReferenceProfile.child("Users").child(userID).child("degree").setValue(newDegree);
+                //contact
+                userDatabaseReferenceProfile.child("Users").child(userID).child("contact").setValue(newContact);
+                //description
+                //userDatabaseReferenceProfile.child("Users").child(userID).child("description").setValue(newDesc);
+
+                profileName.setText(newName);
+                profileAge.setText(newAge);
+                profileContact.setText(newContact);
+                profileDegree.setText(newDegree);
+                profileDesc.setText(newDesc);
+
+                switcher1.showPrevious(); //or switcher.showPrevious();
+                switcher2.showPrevious();
+                switcher3.showPrevious();
+                switcher4.showPrevious();
+                switcher5.showPrevious();
+            }
+
+        });
 
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -534,10 +636,10 @@ public class MainActivity extends Fragment {
                 userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
 
-                profileName.setText("Name: " + userEntity.getName());
-                profileAge.setText("Age: " + userEntity.getAge());
-                profileDegree.setText("Degree: " + userEntity.getDegree());
-                profileContact.setText("Contact: " + userEntity.getContact());
+                profileName.setText(userEntity.getName());
+                profileAge.setText(userEntity.getAge());
+                profileDegree.setText(userEntity.getDegree());
+                profileContact.setText(userEntity.getContact());
             }
         }
 

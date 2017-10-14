@@ -2,7 +2,9 @@ package com.vinguyen.tutorme3;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,8 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,14 +29,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Locale;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private ImageView imageView;
     private FirebaseDatabase userDatabase;
     private DatabaseReference userReference;
+    private StorageReference myRef, defaultRef, storageRef;
     private TextView navName, navEmail;
     private String userID, emailString;
     private FirebaseUser user;
@@ -60,13 +72,34 @@ public class NavigationDrawerActivity extends AppCompatActivity
         });*/
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
         View header = navigationView.getHeaderView(0);
+        imageView = (ImageView) header.findViewById(R.id.imageView);
         navName = (TextView) header.findViewById(R.id.name);
         navEmail = (TextView) header.findViewById(R.id.email);
 
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://tutorme-61083.appspot.com/userProfileImages");
+        myRef = storageRef.child(userID + ".jpg");
+        defaultRef = storageRef.child("default.jpg");
+
+        if (NavigationDrawerActivity.this != null) {
+            myRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(NavigationDrawerActivity.this).using(new FirebaseImageLoader()).load(myRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imageView);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Glide.with(NavigationDrawerActivity.this).using(new FirebaseImageLoader()).load(defaultRef).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))).into(imageView);
+                }
+            });
+        }
 
         if (user != null) {
             userID = user.getUid();
@@ -91,7 +124,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -99,7 +132,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,35 +167,31 @@ public class NavigationDrawerActivity extends AppCompatActivity
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-        } else if (id == R.id.home) {
+            fragmentTransaction.addToBackStack(null).commit();
+        } else if (id == R.id.search) {
             FindTutorFragment fragment = new FindTutorFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-        } else if (id == R.id.find) {
+            fragmentTransaction.addToBackStack(null).commit();
+        } else if (id == R.id.become) {
             BecomeTutorFragment fragment = new BecomeTutorFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.addToBackStack(null).commit();
         } else if (id == R.id.myStudents) {
             MyStudentTabFragment fragment = new MyStudentTabFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.addToBackStack(null).commit();
         } else if (id == R.id.myTutors) {
             MyTutorTabFragment fragment = new MyTutorTabFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            fragmentTransaction.addToBackStack(null).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -238,4 +267,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        getFragmentManager().executePendingTransactions();
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
 }

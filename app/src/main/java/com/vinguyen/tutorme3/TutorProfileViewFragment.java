@@ -104,7 +104,7 @@ public class TutorProfileViewFragment extends Fragment {
         reqRejected.setVisibility(View.GONE);
 
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
-
+        Log.d("PLEASEE", Integer.toString(getFragmentManager().getBackStackEntryCount()));
 
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
@@ -142,10 +142,6 @@ public class TutorProfileViewFragment extends Fragment {
                         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         Log.d("USERID", userID);
                         userDatabaseReference.child("INFS1609").child("Tutors").child(userID).child(userIDCurrent).setValue("pending");
-                        /*FindTutorFragment fragment = new FindTutorFragment();
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, fragment)
-                                .commit();*/
                     }
                 }
                 });
@@ -221,7 +217,6 @@ public class TutorProfileViewFragment extends Fragment {
 
         return rootView;
     }
-
 
     private void showData(DataSnapshot dataSnapshot){
         for(DataSnapshot ds:dataSnapshot.getChildren()){

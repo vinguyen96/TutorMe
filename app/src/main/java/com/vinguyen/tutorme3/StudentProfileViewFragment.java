@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -147,9 +148,10 @@ public class StudentProfileViewFragment extends Fragment {
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
                     MyStudentTabFragment fragment = new MyStudentTabFragment();
-                    getParentFragment().getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .commit();
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    manager.beginTransaction().replace(R.id.fragment_container, fragment)
+                                .addToBackStack(null)
+                                .commit();
                 }
             }
         });
@@ -162,6 +164,7 @@ public class StudentProfileViewFragment extends Fragment {
                     StudentPendingFragment fragment = new StudentPendingFragment();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
                             .commit();
                 }
             }
@@ -230,9 +233,9 @@ public class StudentProfileViewFragment extends Fragment {
                 userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
 
-                profileName.setText("Name: " + userEntity.getName());
+                profileName.setText(userEntity.getName());
                 profileAge.setText("Age: " + userEntity.getAge());
-                profileDegree.setText("Degree: " + userEntity.getDegree());
+                profileDegree.setText(userEntity.getDegree());
                 profileContact.setText("Contact: " + userEntity.getContact());
             }
         }

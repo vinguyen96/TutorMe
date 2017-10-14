@@ -7,128 +7,168 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:background="#778899"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:gravity="center_horizontal"
             android:paddingTop="@dimen/activity_horizontal_margin">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/imgView"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/logo_w_h"
                 android:layout_height="@dimen/logo_w_h"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/activity_vertical_margin"
+                app:civ_border_color="#ffffff"
+                app:civ_border_width="2dp"
                 app:srcCompat="@drawable/defaultprofile" />
 
+                    <TextView
+                        android:id="@+id/profileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:text="@string/hint_name"
+                        android:textSize="24dp" />
+
+                    <TextView
+                        android:id="@+id/profileDegree"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/activity_vertical_margin"
+                        android:gravity="center"
+                        android:text="@string/hint_degree" />
+
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/activity_vertical_margin">
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:id="@+id/monday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/monday"/>
+                    android:src="@drawable/monday" />
+
                 <ImageView
                     android:id="@+id/tuesday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/tuesday"/>
+                    android:src="@drawable/tuesday" />
+
                 <ImageView
                     android:id="@+id/wednesday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/wednesday"/>
+                    android:src="@drawable/wednesday" />
+
                 <ImageView
                     android:id="@+id/thursday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/thursday"/>
+                    android:src="@drawable/thursday" />
+
                 <ImageView
                     android:id="@+id/friday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/friday"/>
+                    android:src="@drawable/friday" />
+
                 <ImageView
                     android:id="@+id/saturday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/saturday"/>
+                    android:src="@drawable/saturday" />
+
                 <ImageView
                     android:id="@+id/sunday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:src="@drawable/sunday"/>
+                    android:src="@drawable/sunday" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/profileName"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="TextView" />
-            <TextView
-                android:id="@+id/noOfTutorLikes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="Tutors that like me: 0" />
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
-            <TextView
-                android:id="@+id/noOfStudentLikes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="Students that like me: 0" />
-            <TextView
-                android:id="@+id/profileContact"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="TextView" />
+                <TextView
+                    android:id="@+id/noOfTutorLikes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/rounded_corner"
+                    android:textColor="#ffffff"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="8dp"
+                    android:text="Tutors that like me: 0" />
 
-            <TextView
-                android:id="@+id/profileAge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="TextView" />
+                <TextView
+                    android:id="@+id/noOfStudentLikes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corner"
+                    android:textColor="#ffffff"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="@dimen/activity_vertical_margin"
+                    android:layout_marginLeft="8dp"
+                    android:text="Students that like me: 0" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/profileDegree"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="TextView" />
+                    <TextView
+                        android:id="@+id/profileAge"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:layout_margin="8dp"
+                        android:text="@string/hint_age" />
+
+                    <TextView
+                        android:id="@+id/profileContact"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:layout_margin="8dp"
+                        android:text="@string/hint_contact" />
+
+                    <TextView
+                        android:id="@+id/profileDesc"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:gravity="left"
+                        android:maxLines="10"
+                        android:text="@string/hint_contact" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -140,6 +180,10 @@
                     android:id="@+id/acceptBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="8dp"
                     android:layout_weight="1"
                     android:text="@string/accept" />
 
@@ -147,6 +191,10 @@
                     android:id="@+id/rejectBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="@dimen/activity_vertical_margin"
+                    android:layout_marginLeft="8dp"
                     android:layout_weight="1"
                     android:text="@string/reject" />
 
@@ -161,12 +209,16 @@
                     android:id="@+id/like"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:gravity="center"
                     android:layout_weight="1"
-                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="16dp"
                     android:text="Like" />
                 </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

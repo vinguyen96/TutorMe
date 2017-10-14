@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -78,6 +79,12 @@ public class BecomeTutorFragment extends Fragment {
                 DatabaseReference userDatabaseReference = userDatabase.getReference();
                 String course = courseAC.getText().toString().trim();
                 userDatabaseReference.child("Courses").child(course).child("Tutors").child(userID).setValue(name);
+                FindTutorFragment fragment = new FindTutorFragment();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+                Toast.makeText(getActivity(), getString(R.string.becomeTutorToast), Toast.LENGTH_LONG).show();
             }
         });
 

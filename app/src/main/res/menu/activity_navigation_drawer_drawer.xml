@@ -3,38 +3,24 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/profile"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Profile" />
+            android:id="@+id/search"
+            android:icon="@drawable/ic_menu_search"
+            android:title="@string/search" />
         <item
-            android:id="@+id/home"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Home" />
-        <item
-            android:id="@+id/find"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Find" /> <!-- CHANGE TO STRINGS.XML -->
+            android:id="@+id/become"
+            android:icon="@drawable/ic_menu_become"
+            android:title="@string/becomeATutor" />
         <item
             android:id="@+id/myStudents"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="My Students" /> <!-- CHANGE TO STRINGS.XML -->
+            android:icon="@drawable/ic_menu_students"
+            android:title="@string/myStudents" />
         <item
             android:id="@+id/myTutors"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="My Tutors" /> <!-- CHANGE TO STRINGS.XML -->
+            android:icon="@drawable/ic_menu_tutor"
+            android:title="@string/myTutors" />
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_menu_profile"
+            android:title="@string/myProfile" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
-
 </menu>

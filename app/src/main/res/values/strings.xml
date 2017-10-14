@@ -42,12 +42,36 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name="language_array">
+        <item>English</item>
+        <item>Korean</item>
+        <item>Mandarin</item>
+    </string-array>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
     <string name="hint_course">Course</string>
     <string name="accept">Accept</string>
     <string name="reject">Reject</string>
+    <string name="cancel">Cancel</string>
+    <string name="apply">Apply</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="becomeTutorToast">You have successfully signed up as a tutor!</string>
+    <string name="searchAndBecome">Search for a course and become a tutor:</string>
+    <string name="becomeATutor">Become a tutor</string>
+    <string name="becomeAStudent">Become a student</string>
     <string name="reqSent">Request Sent</string>
     <string name="reqAccepted">Request Accepted</string>
     <string name="reqRejected">Request Rejected</string>
+    <string name="search">Search for a tutor</string>
+    <string name="myStudents">My Students</string>
+    <string name="myTutors">My Tutors</string>
+    <string name="myProfile">My Profile</string>
 </resources>

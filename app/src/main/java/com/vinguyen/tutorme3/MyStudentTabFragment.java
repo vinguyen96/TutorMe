@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MyStudentTabFragment extends Fragment {
+public class MyStudentTabFragment extends Fragment{
 
     //Mandatory Constructor
     public MyStudentTabFragment() {
@@ -39,12 +39,11 @@ public class MyStudentTabFragment extends Fragment {
         TabLayout tabs = (TabLayout)rootView.findViewById(R.id.fixture_tabs);
         tabs.setupWithViewPager(viewPager);
 
-
         return rootView;
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getChildFragmentManager());
+        Adapter adapter = new Adapter(getFragmentManager());
         adapter.addFragment(new StudentPendingFragment(), "Pending");
         adapter.addFragment(new StudentAcceptedFragment(), "Accepted");
         adapter.addFragment(new StudentRejectedFragment(), "Rejected");
