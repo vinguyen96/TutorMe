@@ -184,7 +184,7 @@ public class MainActivity extends Fragment {
             });
         }
 
-        if (userID != null) {
+        if (userID!= null) {
             FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
             DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
             userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
