@@ -263,6 +263,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
             case R.id.action_korean:
                 saveLanguage("ko");
                 break;
+
+            case R.id.action_chinese:
+                saveLanguage("zh");
+                break;
         }
         return true;
     }

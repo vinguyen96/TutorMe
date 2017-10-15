@@ -219,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:text="Age: " />
+                    android:text="@string/hint_age" />
 
 
                 <ViewSwitcher
@@ -264,7 +264,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:text="Contact: " />
+                    android:text="@string/hint_contact" />
 
                 <ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/my_switcher4"
@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:text="Description: " />
+                    android:text="@string/description" />
 
                 <ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/my_switcher5"
