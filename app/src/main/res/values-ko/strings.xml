@@ -22,8 +22,8 @@
     <string name="english">영어</string>
     <string name="forgot_password_msg">비밀번호 재설정 지침을 보내려면 등록 된 이메일 ID가 필요합니다.</string>
     <string name="hello_blank_fragment">안녕하세요 빈 조각</string>
-    <string name="hint_age">나이</string>
-    <string name="hint_contact">연착처</string>
+    <string name="hint_age">나이:</string>
+    <string name="hint_contact">연착처:</string>
     <string name="hint_course">코스</string>
     <string name="hint_degree">학위</string>
     <string name="hint_email">이메일</string>
@@ -50,7 +50,9 @@
     <string name="becomeTutorToast">성공적으로 과외 선생님이 되였습니다!</string>
     <string name="cancel">취소</string>
     <string name="chinese">중국어</string>
-    <string name="description">정보</string>
+    <string name="description">정보:</string>
+    <string name="tutorsThatLikeMe">나를 선호하는 선생님:</string>
+    <string name="studentsThatLikeMe">나를 선호하는 학생들:</string>
     <string name="filter">필터</string>
     <string name="friday">금요일</string>
     <string name="monday">월요일</string>

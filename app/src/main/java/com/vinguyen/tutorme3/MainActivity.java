@@ -170,34 +170,37 @@ public class MainActivity extends Fragment {
 
         FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
         DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
-        if (userID != null) {
-            userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    long count = dataSnapshot.getChildrenCount();
-                    noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
-                }
+        Activity activity = getActivity();
+        if (activity!=null && isAdded()) {
+            if (userID != null) {
+                userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        long count = dataSnapshot.getChildrenCount();
+                        noOfStudentLikes.setText(getString(R.string.studentsThatLikeMe) + " " + Long.toString(count));
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
 
-        if (userID!= null) {
-            FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
-            DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
-            userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    long count = dataSnapshot.getChildrenCount();
-                    noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
-                }
+            if (userID != null) {
+                FirebaseDatabase userDatabaseTutorLikes = FirebaseDatabase.getInstance();
+                DatabaseReference userDatabaseReferenceTutorLikes = userDatabaseTutorLikes.getReference();
+                userDatabaseReferenceTutorLikes.child("Users").child(userID).child("TutorLikes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        long count = dataSnapshot.getChildrenCount();
+                        noOfTutorLikes.setText(getString(R.string.tutorsThatLikeMe) + " " + Long.toString(count));
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
         }
 
         getMondayAvailability();
@@ -641,9 +644,9 @@ public class MainActivity extends Fragment {
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
 
                 profileName.setText(userEntity.getName());
-                profileAge.setText(userEntity.getAge());
+                profileAge.setText(" " + userEntity.getAge());
                 profileDegree.setText(userEntity.getDegree());
-                profileContact.setText(userEntity.getContact());
+                profileContact.setText(" " + userEntity.getContact());
             }
         }
 

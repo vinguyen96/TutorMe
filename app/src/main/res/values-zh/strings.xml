@@ -20,8 +20,8 @@
     <string name="email">电子邮件</string>
     <string name="forgot_password_msg">我们只需要您注册的电子邮件ID即可向您发送密码重置说明。</string>
     <string name="hello_blank_fragment">你好空白片段</string>
-    <string name="hint_age">年龄</string>
-    <string name="hint_contact">联系</string>
+    <string name="hint_age">年龄:</string>
+    <string name="hint_contact">联系:</string>
     <string name="hint_course">课程</string>
     <string name="hint_degree">学位</string>
     <string name="hint_email">电子邮件</string>
@@ -43,7 +43,7 @@
     <string name="korean">韩国语言</string>
     <string name="title_activity_profile">TutorMe</string>
     <string name="cantonese">广东话</string>
-    <string name="description">描述</string>
+    <string name="description">描述:</string>
     <string name="chinese">中文</string>
     <string name="cancel">取消</string>
     <string name="apply">应用</string>
