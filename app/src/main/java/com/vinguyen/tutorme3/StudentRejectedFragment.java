@@ -19,11 +19,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class StudentRejectedFragment extends Fragment {
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView mRecyclerViewR;
+    private RecyclerView.Adapter mAdapterR;
+    private RecyclerView.LayoutManager mLayoutManagerR;
+    private ArrayList resultsR = new ArrayList<DataObject>();
     Activity activity;
-    ArrayList<String> tutors, availability;
+    ArrayList<String> tutorsR, availabilityR;
     private static String LOG_TAG = "CardViewActivity";
     private String userID;
 
@@ -34,21 +35,20 @@ public class StudentRejectedFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_student_rejected, container, false);
         activity = getActivity();
 
-        tutors = new ArrayList<String>();
+        tutorsR = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (userID != null) {
             getDataSet();
         }
 
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.my_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(activity);
+        mRecyclerViewR = (RecyclerView)rootView.findViewById(R.id.my_recycler_viewR);
+        mRecyclerViewR.setHasFixedSize(true);
+        mLayoutManagerR = new LinearLayoutManager(activity);
 
         return rootView;
     }
 
     public void getDataSet() {
-        final ArrayList results = new ArrayList<DataObject>();
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,48 +77,48 @@ public class StudentRejectedFragment extends Fragment {
                                                         userEntity.setFriday(ds.child(key).getValue(UserEntity.class).getFriday());
                                                         userEntity.setSaturday(ds.child(key).getValue(UserEntity.class).getSaturday());
                                                         userEntity.setSunday(ds.child(key).getValue(UserEntity.class).getSunday());
-                                                        if (availability != null) {
-                                                            if (availability.contains("monday") && userEntity.getMonday().equals("no")) {
+                                                        if (availabilityR != null) {
+                                                            if (availabilityR.contains("monday") && userEntity.getMonday().equals("no")) {
                                                                 return;
                                                             }
-                                                            if (availability.contains("tuesday") && userEntity.getTuesday().equals("no")) {
+                                                            if (availabilityR.contains("tuesday") && userEntity.getTuesday().equals("no")) {
                                                                 return;
                                                             }
-                                                            if (availability.contains("wednesday") && userEntity.getWednesday().equals("no")) {
+                                                            if (availabilityR.contains("wednesday") && userEntity.getWednesday().equals("no")) {
                                                                 return;
                                                             }
-                                                            if (availability.contains("thursday") && userEntity.getThursday().equals("no")) {
+                                                            if (availabilityR.contains("thursday") && userEntity.getThursday().equals("no")) {
                                                                 return;
                                                             }
-                                                            if (availability.contains("friday") && userEntity.getFriday().equals("no")) {
+                                                            if (availabilityR.contains("friday") && userEntity.getFriday().equals("no")) {
                                                                 return;
                                                             }
-                                                            if (availability.contains("saturday") && userEntity.getSaturday().equals("no")) {
+                                                            if (availabilityR.contains("saturday") && userEntity.getSaturday().equals("no")) {
                                                                 return;
                                                             }
-                                                            if (availability.contains("sunday") && userEntity.getSunday().equals("no")) {
+                                                            if (availabilityR.contains("sunday") && userEntity.getSunday().equals("no")) {
                                                                 return;
                                                             }
                                                         }
                                                         DataObject obj = new DataObject(userEntity.getName(), userEntity.getDegree(), key);
-                                                        results.add(obj);
+                                                        resultsR.add(obj);
                                                     }
                                                 }
 
-                                                mAdapter = new MyRecyclerViewAdapter(results);
-                                                mRecyclerView.setLayoutManager(mLayoutManager);
-                                                mRecyclerView.setAdapter(mAdapter);
+                                                mAdapterR = new MyRecyclerViewAdapter(resultsR);
+                                                mRecyclerViewR.setLayoutManager(mLayoutManagerR);
+                                                mRecyclerViewR.setAdapter(mAdapterR);
 
-                                                ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+                                                ((MyRecyclerViewAdapter) mAdapterR).setOnItemClickListener(new MyRecyclerViewAdapter
                                                         .MyClickListener() {
                                                     @Override
                                                     public void onItemClick(int position, View v) {
-                                                        DataObject dObj = (DataObject) results.get(position);
+                                                        DataObject dObj = (DataObject) resultsR.get(position);
                                                         Bundle bundle = new Bundle();
-                                                        bundle.putString("message", ((DataObject) results.get(position)).getUserID());
+                                                        bundle.putString("message", ((DataObject) resultsR.get(position)).getUserID());
                                                         StudentProfileViewFragment fragment = new StudentProfileViewFragment();
                                                         fragment.setArguments(bundle);
-                                                        getFragmentManager().beginTransaction()
+                                                        getParentFragment().getFragmentManager().beginTransaction()
                                                                 .replace(R.id.fragment_container, fragment)
                                                                 .addToBackStack(null)
                                                                 .commit();

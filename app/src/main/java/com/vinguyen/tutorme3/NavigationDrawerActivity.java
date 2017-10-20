@@ -1,5 +1,6 @@
 package com.vinguyen.tutorme3;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -44,14 +45,15 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private TextView navName, navEmail;
     private String userID, emailString;
     private FirebaseUser user;
+    private Activity activity;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation_drawer);
         loadLanguage();
+        setContentView(R.layout.activity_navigation_drawer);
 
         MainActivity fragment = new MainActivity();
         android.support.v4.app.FragmentTransaction fragmentTransaction =
@@ -256,6 +258,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_settings:
+                SettingsFragment fragment = new SettingsFragment();
+                android.support.v4.app.FragmentTransaction fragmentTransaction =
+                        getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
+                fragmentTransaction.addToBackStack(null).commit();
+                break;
             case R.id.action_english:
                 saveLanguage("en");
                 break;

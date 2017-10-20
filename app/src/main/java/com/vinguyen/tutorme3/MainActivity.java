@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +24,8 @@ import android.widget.ViewSwitcher;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,10 +41,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class MainActivity extends Fragment {
 
-    private Button btnChangeEmail, btnChangePassword, btnSendResetEmail, btnRemoveUser,
-            changeEmail, changePassword, sendEmail, remove, signOut, btnSaveEdit;
+    private Button signOut, btnSaveEdit;
 
-    private EditText oldEmail, newEmail, password, newPassword, hidden1, hidden2, hidden3, hidden4, hidden5;
+    private EditText hidden1, hidden2, hidden3, hidden4, hidden5;
     private TextView profileName, profileAge, profileDegree, profileContact, profileDesc, noOfStudentLikes, noOfTutorLikes;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
@@ -107,20 +103,7 @@ public class MainActivity extends Fragment {
             }
         };
 
-        btnChangeEmail = (Button) rootView.findViewById(R.id.change_email_button);
-        btnChangePassword = (Button) rootView.findViewById(R.id.change_password_button);
-        btnSendResetEmail = (Button) rootView.findViewById(R.id.sending_pass_reset_button);
-        btnRemoveUser = (Button) rootView.findViewById(R.id.remove_user_button);
-        changeEmail = (Button) rootView.findViewById(R.id.changeEmail);
-        changePassword = (Button) rootView.findViewById(R.id.changePass);
-        sendEmail = (Button) rootView.findViewById(R.id.send);
-        remove = (Button) rootView.findViewById(R.id.remove);
         signOut = (Button) rootView.findViewById(R.id.sign_out);
-
-        oldEmail = (EditText) rootView.findViewById(R.id.old_email);
-        newEmail = (EditText) rootView.findViewById(R.id.new_email);
-        password = (EditText) rootView.findViewById(R.id.password);
-        newPassword = (EditText) rootView.findViewById(R.id.newPassword);
 
         noOfStudentLikes =(TextView) rootView.findViewById(R.id.noOfStudentLikes);
         noOfTutorLikes =(TextView) rootView.findViewById(R.id.noOfTutorLikes);
@@ -138,15 +121,6 @@ public class MainActivity extends Fragment {
         fridayView = (ImageView) rootView.findViewById(R.id.friday);
         saturdayView = (ImageView) rootView.findViewById(R.id.saturday);
         sundayView = (ImageView) rootView.findViewById(R.id.sunday);
-
-        oldEmail.setVisibility(View.GONE);
-        newEmail.setVisibility(View.GONE);
-        password.setVisibility(View.GONE);
-        newPassword.setVisibility(View.GONE);
-        changeEmail.setVisibility(View.GONE);
-        changePassword.setVisibility(View.GONE);
-        sendEmail.setVisibility(View.GONE);
-        remove.setVisibility(View.GONE);
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
@@ -170,14 +144,16 @@ public class MainActivity extends Fragment {
 
         FirebaseDatabase userDatabaseStudentLikes = FirebaseDatabase.getInstance();
         DatabaseReference userDatabaseReferenceStudentLikes = userDatabaseStudentLikes.getReference();
-        Activity activity = getActivity();
+        final Activity activity = getActivity();
         if (activity!=null && isAdded()) {
             if (userID != null) {
                 userDatabaseReferenceStudentLikes.child("Users").child(userID).child("StudentLikes").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         long count = dataSnapshot.getChildrenCount();
-                        noOfStudentLikes.setText(getString(R.string.studentsThatLikeMe) + " " + Long.toString(count));
+                        String studentsThatLikeMeString = activity.getResources().getString(R.string.studentsThatLikeMe);
+                        noOfStudentLikes.setText(studentsThatLikeMeString + " " + Long.toString(count));
+                        //getString(R.string.studentsThatLikeMe) +
                     }
 
                     @Override
@@ -193,7 +169,8 @@ public class MainActivity extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         long count = dataSnapshot.getChildrenCount();
-                        noOfTutorLikes.setText(getString(R.string.tutorsThatLikeMe) + " " + Long.toString(count));
+                        String tutorsThatLikeMeString = activity.getResources().getString(R.string.tutorsThatLikeMe);
+                        noOfTutorLikes.setText(tutorsThatLikeMeString + " " + Long.toString(count));
                     }
 
                     @Override
@@ -204,19 +181,12 @@ public class MainActivity extends Fragment {
         }
 
         getMondayAvailability();
-        Log.d("TEST", mondayAvailability);
         getTuesdayAvailability();
-        Log.d("TEST", tuesdayAvailability);
         getWednesdayAvailability();
-        Log.d("TEST", wednesdayAvailability);
         getThursdayAvailability();
-        Log.d("TEST", thursdayAvailability);
         getFridayAvailability();
-        Log.d("TEST", fridayAvailability);
         getSaturdayAvailability();
-        Log.d("TEST", saturdayAvailability);
         getSundayAvailability();
-        Log.d("TEST", sundayAvailability);
 
         mondayView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -377,153 +347,6 @@ public class MainActivity extends Fragment {
             }
         });
 
-        btnChangeEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldEmail.setVisibility(View.GONE);
-                newEmail.setVisibility(View.VISIBLE);
-                password.setVisibility(View.GONE);
-                newPassword.setVisibility(View.GONE);
-                changeEmail.setVisibility(View.VISIBLE);
-                changePassword.setVisibility(View.GONE);
-                sendEmail.setVisibility(View.GONE);
-                remove.setVisibility(View.GONE);
-            }
-        });
-
-        changeEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null && !newEmail.getText().toString().trim().equals("")) {
-                    user.updateEmail(newEmail.getText().toString().trim())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Email address is updated. Please sign in with new email id!", Toast.LENGTH_LONG).show();
-                                        signOut();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to update email!", Toast.LENGTH_LONG).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                } else if (newEmail.getText().toString().trim().equals("")) {
-                    newEmail.setError("Enter email");
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnChangePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldEmail.setVisibility(View.GONE);
-                newEmail.setVisibility(View.GONE);
-                password.setVisibility(View.GONE);
-                newPassword.setVisibility(View.VISIBLE);
-                changeEmail.setVisibility(View.GONE);
-                changePassword.setVisibility(View.VISIBLE);
-                sendEmail.setVisibility(View.GONE);
-                remove.setVisibility(View.GONE);
-            }
-        });
-
-        changePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null && !newPassword.getText().toString().trim().equals("")) {
-                    if (newPassword.getText().toString().trim().length() < 6) {
-                        newPassword.setError("Password too short, enter minimum 6 characters");
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        user.updatePassword(newPassword.getText().toString().trim())
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getActivity(), "Password is updated, sign in with new password!", Toast.LENGTH_SHORT).show();
-                                            signOut();
-                                            progressBar.setVisibility(View.GONE);
-                                        } else {
-                                            Toast.makeText(getActivity(), "Failed to update password!", Toast.LENGTH_SHORT).show();
-                                            progressBar.setVisibility(View.GONE);
-                                        }
-                                    }
-                                });
-                    }
-                } else if (newPassword.getText().toString().trim().equals("")) {
-                    newPassword.setError("Enter password");
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnSendResetEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oldEmail.setVisibility(View.VISIBLE);
-                newEmail.setVisibility(View.GONE);
-                password.setVisibility(View.GONE);
-                newPassword.setVisibility(View.GONE);
-                changeEmail.setVisibility(View.GONE);
-                changePassword.setVisibility(View.GONE);
-                sendEmail.setVisibility(View.VISIBLE);
-                remove.setVisibility(View.GONE);
-            }
-        });
-
-        sendEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (!oldEmail.getText().toString().trim().equals("")) {
-                    auth.sendPasswordResetEmail(oldEmail.getText().toString().trim())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Reset password email is sent!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                } else {
-                    oldEmail.setError("Enter email");
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnRemoveUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null) {
-                    user.delete()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getActivity(), SignupActivity.class));
-                                        getActivity().finish();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                }
-            }
-        });
         btnEditProfile = (ImageView) rootView.findViewById(R.id.btnEditProfile);
         btnSaveEdit = (Button) rootView.findViewById(R.id.btnSaveProfile);
         btnSaveEdit.setVisibility(View.GONE);

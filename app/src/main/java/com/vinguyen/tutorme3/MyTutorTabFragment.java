@@ -1,6 +1,7 @@
 package com.vinguyen.tutorme3;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -45,9 +46,13 @@ public class MyTutorTabFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getChildFragmentManager());
-        adapter.addFragment(new TutorPendingFragment(), "Pending");
-        adapter.addFragment(new TutorAcceptedFragment(), "Accepted");
-        adapter.addFragment(new TutorRejectedFragment(), "Rejected");
+        Activity activity = getActivity();
+        String pending = activity.getResources().getString(R.string.pending);
+        String rejected = activity.getResources().getString(R.string.rejected);
+        String accepted = activity.getResources().getString(R.string.accepted);
+        adapter.addFragment(new TutorPendingFragment(), pending);
+        adapter.addFragment(new TutorAcceptedFragment(), accepted);
+        adapter.addFragment(new TutorRejectedFragment(), rejected);
         viewPager.setAdapter(adapter);
 
     }

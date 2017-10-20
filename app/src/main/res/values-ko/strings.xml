@@ -69,4 +69,7 @@
     <string name="thursday">목요일</string>
     <string name="tuesday">화요일</string>
     <string name="wednesday">수요일</string>
+    <string name="accepted">수락된</string>
+    <string name="pending">처리중</string>
+    <string name="rejected">거절된</string>
 </resources>

@@ -67,4 +67,7 @@
     <string name="thursday">星期四</string>
     <string name="tuesday">星期二</string>
     <string name="wednesday">星期三</string>
+    <string name="pending">等待中</string>
+    <string name="accepted">已接受</string>
+    <string name="rejected">已拒绝</string>
 </resources>

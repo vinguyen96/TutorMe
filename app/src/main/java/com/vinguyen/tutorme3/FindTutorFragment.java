@@ -45,7 +45,7 @@ public class FindTutorFragment extends Fragment {
         getDataSet();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            availability = bundle.getStringArrayList("availability");
+            availability = bundle.getStringArrayList("availabilityR");
         }
         Bundle bundleSort = this.getArguments();
         if (bundleSort != null) {
@@ -69,7 +69,7 @@ public class FindTutorFragment extends Fragment {
                         public void customDialogEvent(ArrayList<String> array) {
                             availability = array;
                             Bundle bundle = new Bundle();
-                            bundle.putStringArrayList("availability", availability);
+                            bundle.putStringArrayList("availabilityR", availability);
                             FindTutorFragment fragment = new FindTutorFragment();
                             fragment.setArguments(bundle);
                             getFragmentManager().beginTransaction()
@@ -86,7 +86,7 @@ public class FindTutorFragment extends Fragment {
                         public void customDialogEvent(ArrayList<String> array) {
                             availability = array;
                             Bundle bundle = new Bundle();
-                            bundle.putStringArrayList("availability", availability);
+                            bundle.putStringArrayList("availabilityR", availability);
                             FindTutorFragment fragment = new FindTutorFragment();
                             fragment.setArguments(bundle);
                             getFragmentManager().beginTransaction()

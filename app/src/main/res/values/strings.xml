@@ -77,4 +77,7 @@
     <string name="myStudents">My Students</string>
     <string name="myTutors">My Tutors</string>
     <string name="myProfile">My Profile</string>
+    <string name="pending">Pending</string>
+    <string name="accepted">Accepted</string>
+    <string name="rejected">Rejected</string>
 </resources>
