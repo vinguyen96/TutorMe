@@ -125,11 +125,11 @@ public class TutorPendingFragment extends Fragment {
                     }
                 }
 
-                mAdapter = new MyRecyclerViewAdapter(results);
+                mAdapter = new MyRecyclerViewAdapter2(results);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 
-                ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+                ((MyRecyclerViewAdapter2) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter2
                         .MyClickListener() {
                     @Override
                     public void onItemClick(int position, View v) {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,25 +49,6 @@ public class StudentPendingFragment extends Fragment {
         mRecyclerViewP.setHasFixedSize(true);
         mLayoutManagerP = new LinearLayoutManager(activity);
 
-        if (mAdapterP != null) {
-            ((MyRecyclerViewAdapter) mAdapterP).setOnItemClickListener(new MyRecyclerViewAdapter
-                    .MyClickListener() {
-                @Override
-                public void onItemClick(int position, View v) {
-                    DataObject dObj = (DataObject) resultsP.get(position);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("message", dObj.getUserID());
-                    StudentProfileViewFragment fragment = new StudentProfileViewFragment();
-                    fragment.setArguments(bundle);
-                    getParentFragment().getFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
-                    //Log.i(LOG_TAG, " Clicked on Item " + position);
-                }
-            });
-        }
-
         return rootView;
     }
 
@@ -84,6 +66,7 @@ public class StudentPendingFragment extends Fragment {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         if (ds.getKey().equals(tutor.getKey())) {
+                                            resultsP.clear();
                                             FirebaseDatabase.getInstance().getReference().addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,9 +81,27 @@ public class StudentPendingFragment extends Fragment {
                                                         }
                                                     }
 
-                                                    mAdapterP = new MyRecyclerViewAdapter(resultsP);
+                                                    mAdapterP = new MyRecyclerViewAdapter2(resultsP);
                                                     mRecyclerViewP.setLayoutManager(mLayoutManagerP);
                                                     mRecyclerViewP.setAdapter(mAdapterP);
+
+                                                    ((MyRecyclerViewAdapter2) mAdapterP).setOnItemClickListener(new MyRecyclerViewAdapter2
+                                                            .MyClickListener() {
+                                                        @Override
+                                                        public void onItemClick(int position, View v) {
+                                                            Log.d("PASSES", "HERE");
+                                                            DataObject dObj = (DataObject) resultsP.get(position);
+                                                            Bundle bundle = new Bundle();
+                                                            bundle.putString("message", dObj.getUserID());
+                                                            StudentProfileViewFragment fragment = new StudentProfileViewFragment();
+                                                            fragment.setArguments(bundle);
+                                                            getParentFragment().getFragmentManager().beginTransaction()
+                                                                    .replace(R.id.fragment_container, fragment)
+                                                                    .addToBackStack(null)
+                                                                    .commit();
+                                                            //Log.i(LOG_TAG, " Clicked on Item " + position);
+                                                        }
+                                                    });
 
                                                 }
 

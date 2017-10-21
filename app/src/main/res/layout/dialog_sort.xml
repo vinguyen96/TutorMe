@@ -18,14 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Likes" />
+            android:text="@string/like" />
 
         <RadioButton
             android:id="@+id/radioButtonName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Name" />
+            android:text="@string/hint_name" />
     </RadioGroup>
 
     <LinearLayout

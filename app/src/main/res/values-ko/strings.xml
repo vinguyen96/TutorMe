@@ -72,4 +72,6 @@
     <string name="accepted">수락된</string>
     <string name="pending">처리중</string>
     <string name="rejected">거절된</string>
+    <string name="like">좋아요</string>
+    <string name="unlike">싫어요</string>
 </resources>

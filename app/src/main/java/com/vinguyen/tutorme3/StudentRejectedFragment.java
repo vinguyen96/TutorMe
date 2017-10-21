@@ -61,6 +61,7 @@ public class StudentRejectedFragment extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                     if (ds.getKey().equals(tutor.getKey())) {
+                                        resultsR.clear();
                                         FirebaseDatabase.getInstance().getReference().addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {

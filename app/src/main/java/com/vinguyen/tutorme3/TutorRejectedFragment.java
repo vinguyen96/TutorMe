@@ -126,11 +126,11 @@ public class TutorRejectedFragment extends Fragment {
                     }
                 }
 
-                mAdapter = new MyRecyclerViewAdapter(results);
+                mAdapter = new MyRecyclerViewAdapter3(results);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 
-                ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+                ((MyRecyclerViewAdapter3) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter3
                         .MyClickListener() {
                     @Override
                     public void onItemClick(int position, View v) {

@@ -34,7 +34,7 @@ import com.google.firebase.storage.StorageReference;
 public class StudentProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, userDatabaseReference, databaseRef;
-    private TextView profileName, profileAge, profileDegree, profileContact,noOfStudentLikes,noOfTutorLikes;
+    private TextView profileName, profileAge, profileDegree, profileContact,noOfStudentLikes,noOfTutorLikes, contact;
     private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
     private String userID;
     private Button acceptBtn, rejectBtn, likeBtn;
@@ -69,7 +69,9 @@ public class StudentProfileViewFragment extends Fragment {
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
+        contact = (TextView) rootView.findViewById(R.id.contact);
         profileContact.setVisibility(View.GONE);
+        contact.setVisibility(View.GONE);
 
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
         likeBtn=(Button)rootView.findViewById(R.id.like);
@@ -161,7 +163,7 @@ public class StudentProfileViewFragment extends Fragment {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Log.d("USERID", userID);
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("rejected");
-                    StudentPendingFragment fragment = new StudentPendingFragment();
+                    MyStudentTabFragment fragment = new MyStudentTabFragment();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
                             .addToBackStack(null)
@@ -177,9 +179,11 @@ public class StudentProfileViewFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.child(userIDCurrent).exists()) {
-                            likeBtn.setText("UnLike");
+                            String unlike = activity.getResources().getString(R.string.unlike);
+                            likeBtn.setText(unlike);
                         } else {
-                            likeBtn.setText("Like");
+                            String like = activity.getResources().getString(R.string.like);
+                            likeBtn.setText(like);
                         }
                     }
 
@@ -234,9 +238,9 @@ public class StudentProfileViewFragment extends Fragment {
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
 
                 profileName.setText(userEntity.getName());
-                profileAge.setText("Age: " + userEntity.getAge());
+                profileAge.setText(userEntity.getAge());
                 profileDegree.setText(userEntity.getDegree());
-                profileContact.setText("Contact: " + userEntity.getContact());
+                profileContact.setText(userEntity.getContact());
             }
         }
 
@@ -249,7 +253,8 @@ public class StudentProfileViewFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 long count = dataSnapshot.getChildrenCount();
-                noOfTutorLikes.setText(String.format("Tutors that like me: %s", Long.toString(count)));
+                String tutorsThatLikeMeString = activity.getResources().getString(R.string.tutorsThatLikeMe);
+                noOfTutorLikes.setText(tutorsThatLikeMeString + " " + Long.toString(count));
             }
 
             @Override
@@ -265,7 +270,8 @@ public class StudentProfileViewFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 long count = dataSnapshot.getChildrenCount();
-                noOfStudentLikes.setText(String.format("Students that like me: %s", Long.toString(count)));
+                String studentsThatLikeMeString = activity.getResources().getString(R.string.studentsThatLikeMe);
+                noOfStudentLikes.setText(studentsThatLikeMeString + " " + Long.toString(count));
             }
 
             @Override
@@ -530,12 +536,10 @@ public class StudentProfileViewFragment extends Fragment {
                     for (DataSnapshot tutor : dataSnapshot.getChildren()) {
                         Log.d("IDK", userIDCurrent + " " + userID + " " + tutor.getKey() + " " + tutor.getValue());
                         if (tutor.getValue().equals("pending") && tutor.getKey().equals(userID)) {
-                            profileContact.setVisibility(View.GONE);
                             acceptBtn.setVisibility(View.VISIBLE);
                             rejectBtn.setVisibility(View.VISIBLE);
-                        } else if (tutor.getValue().equals("rejected") && tutor.getKey().equals(userID)) {
-                            profileAge.setVisibility(View.GONE);
                         } else if (tutor.getValue().equals("accepted") && tutor.getKey().equals(userID)) {
+                            contact.setVisibility(View.VISIBLE);
                             profileContact.setVisibility(View.VISIBLE);
                             likeBtn.setVisibility(View.VISIBLE);
                         }

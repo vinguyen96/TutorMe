@@ -39,7 +39,6 @@ public class MyStudentTabFragment extends Fragment{
         setupViewPager(viewPager);
         TabLayout tabs = (TabLayout)rootView.findViewById(R.id.fixture_tabs);
         tabs.setupWithViewPager(viewPager);
-
         return rootView;
     }
 
@@ -49,7 +48,8 @@ public class MyStudentTabFragment extends Fragment{
         String pending = activity.getResources().getString(R.string.pending);
         String rejected = activity.getResources().getString(R.string.rejected);
         String accepted = activity.getResources().getString(R.string.accepted);
-        adapter.addFragment(new StudentPendingFragment(), pending);
+        StudentPendingFragment studentPendingFragment = new StudentPendingFragment();
+        adapter.addFragment(studentPendingFragment, pending);
         adapter.addFragment(new StudentAcceptedFragment(), accepted);
         adapter.addFragment(new StudentRejectedFragment(), rejected);
         viewPager.setAdapter(adapter);
@@ -68,7 +68,6 @@ public class MyStudentTabFragment extends Fragment{
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
         }
-
 
         @Override
         public int getCount() {

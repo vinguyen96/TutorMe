@@ -80,4 +80,7 @@
     <string name="pending">Pending</string>
     <string name="accepted">Accepted</string>
     <string name="rejected">Rejected</string>
+    <string name="like">Like</string>
+    <string name="unlike">Unlike</string>
+    <string name="cantonese">Cantonese</string>
 </resources>

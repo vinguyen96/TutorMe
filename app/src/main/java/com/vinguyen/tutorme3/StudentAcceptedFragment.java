@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +62,7 @@ public class StudentAcceptedFragment extends Fragment {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         if (ds.getKey().equals(tutor.getKey())) {
+                                            resultsA.clear();
                                             FirebaseDatabase.getInstance().getReference().addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -106,12 +106,11 @@ public class StudentAcceptedFragment extends Fragment {
                                                             resultsA.add(obj);
                                                         }
                                                     }
-
-                                                    mAdapterA = new MyRecyclerViewAdapter(resultsA);
+                                                    mAdapterA = new MyRecyclerViewAdapter3(resultsA);
                                                     mRecyclerViewA.setLayoutManager(mLayoutManagerA);
                                                     mRecyclerViewA.setAdapter(mAdapterA);
 
-                                                    ((MyRecyclerViewAdapter) mAdapterA).setOnItemClickListener(new MyRecyclerViewAdapter
+                                                    ((MyRecyclerViewAdapter3) mAdapterA).setOnItemClickListener(new MyRecyclerViewAdapter3
                                                             .MyClickListener() {
                                                         @Override
                                                         public void onItemClick(int position, View v) {

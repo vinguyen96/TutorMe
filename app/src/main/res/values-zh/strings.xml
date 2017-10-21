@@ -70,4 +70,8 @@
     <string name="pending">等待中</string>
     <string name="accepted">已接受</string>
     <string name="rejected">已拒绝</string>
+    <string name="like">赞</string>
+    <string name="unlike">踩</string>
+    <string name="studentsThatLikeMe">为我点赞的学生:</string>
+    <string name="tutorsThatLikeMe">为我点赞的导师:</string>
 </resources>
