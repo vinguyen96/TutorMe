@@ -8,10 +8,11 @@
     android:orientation="vertical">
 
     <Spinner
-        android:id="@+id/static_spinner"
+        android:id="@+id/spinner_suburb"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:entries="@array/alphabet_array"
         android:layout_marginTop="20dp" />
 
         <CheckBox

@@ -28,7 +28,7 @@ public class StudentAcceptedFragment extends Fragment {
     ArrayList<String> tutorsA, availability;
     private int noOfTutors = 0;
     private static String LOG_TAG = "CardViewActivity";
-    private String userID;
+    private String userID, course;
     private ProgressBar progressBar;
 
     @Override
@@ -39,6 +39,12 @@ public class StudentAcceptedFragment extends Fragment {
         activity = getActivity();
         tutorsA = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            course = bundle.getString("course");
+        }
+
         getDataSet();
 
         mRecyclerViewA = (RecyclerView) rootView.findViewById(R.id.my_recycler_viewA);
@@ -50,8 +56,8 @@ public class StudentAcceptedFragment extends Fragment {
 
     public void getDataSet() {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-        if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+        if (userID != null && course != null) {
+            ValueEventListener valueEventListener = databaseRef.child(course).child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (final DataSnapshot tutor : dataSnapshot.getChildren()) {
@@ -115,10 +121,15 @@ public class StudentAcceptedFragment extends Fragment {
                                                         @Override
                                                         public void onItemClick(int position, View v) {
                                                             DataObject dObj = (DataObject) resultsA.get(position);
-                                                            Bundle bundle = new Bundle();
-                                                            bundle.putString("message", ((DataObject) resultsA.get(position)).getUserID());
+                                                            Bundle bundle1 = new Bundle();
+                                                            bundle1.putString("userID", ((DataObject) resultsA.get(position)).getUserID());
+                                                            Bundle bundle2 = new Bundle();
+                                                            bundle2.putString("course", course);
+                                                            Bundle mainBundle = new Bundle();
+                                                            mainBundle.putBundle("userID", bundle1);
+                                                            mainBundle.putBundle("course", bundle2);
                                                             StudentProfileViewFragment fragment = new StudentProfileViewFragment();
-                                                            fragment.setArguments(bundle);
+                                                            fragment.setArguments(mainBundle);
                                                             getParentFragment().getFragmentManager().beginTransaction()
                                                                     .replace(R.id.fragment_container, fragment)
                                                                     .addToBackStack(null)

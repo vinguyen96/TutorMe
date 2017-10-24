@@ -4,11 +4,19 @@ public class DataObject {
     private String mText1;
     private String mText2;
     private String mUserID;
+    private int tutorLikes;
 
     DataObject(String text1, String text2, String userID){
         mText1 = text1;
         mText2 = text2;
         mUserID = userID;
+    }
+
+    DataObject(String text1, String text2, int likes, String userID){
+        mText1 = text1;
+        mText2 = text2;
+        mUserID = userID;
+        tutorLikes = likes;
     }
 
     public String getmText1() {
@@ -33,5 +41,21 @@ public class DataObject {
 
     public void setUserID(String userID) {
         this.mUserID = userID;
+    }
+
+    public String getmUserID() {
+        return mUserID;
+    }
+
+    public void setmUserID(String mUserID) {
+        this.mUserID = mUserID;
+    }
+
+    public int getTutorLikes() {
+        return tutorLikes;
+    }
+
+    public void setTutorLikes(int tutorLikes) {
+        this.tutorLikes = tutorLikes;
     }
 }

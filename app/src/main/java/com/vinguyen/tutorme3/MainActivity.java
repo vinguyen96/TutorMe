@@ -43,8 +43,8 @@ public class MainActivity extends Fragment {
 
     private Button signOut, btnSaveEdit;
 
-    private EditText hidden1, hidden2, hidden3, hidden4, hidden5;
-    private TextView profileName, profileAge, profileDegree, profileContact, profileDesc, noOfStudentLikes, noOfTutorLikes;
+    private EditText hidden1, hidden2, hidden3, hidden4, hidden5, hidden6;
+    private TextView profileName, profileAge, profileDegree, profileContact, profileSuburb, profileDesc, noOfStudentLikes, noOfTutorLikes;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -112,6 +112,7 @@ public class MainActivity extends Fragment {
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
+        profileSuburb=(TextView) rootView.findViewById(R.id.profileSuburb);
         profileDesc=(TextView) rootView.findViewById(R.id.profileDesc);
 
         mondayView = (ImageView) rootView.findViewById(R.id.monday);
@@ -396,6 +397,12 @@ public class MainActivity extends Fragment {
                 String desc = profileDesc.getText().toString();
                 editDescription.setText(desc);
 
+                ViewSwitcher switcher6 = (ViewSwitcher)getView().findViewById(R.id.my_switcher6);
+                switcher6.showNext(); //or switcher.showPrevious();
+                TextView editSuburb = (TextView) switcher6.findViewById(R.id.hidden_edit_view6);
+                String suburb = profileSuburb.getText().toString();
+                editSuburb.setText(suburb);
+
             }
         });
         hidden1 = (EditText) rootView.findViewById(R.id.hidden_edit_view1);
@@ -403,6 +410,7 @@ public class MainActivity extends Fragment {
         hidden3 = (EditText) rootView.findViewById(R.id.hidden_edit_view3);
         hidden4 = (EditText) rootView.findViewById(R.id.hidden_edit_view4);
         hidden5 = (EditText) rootView.findViewById(R.id.hidden_edit_view5);
+        hidden6 = (EditText) rootView.findViewById(R.id.hidden_edit_view6);
 
         btnSaveEdit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -413,12 +421,14 @@ public class MainActivity extends Fragment {
                 ViewSwitcher switcher3 = (ViewSwitcher) getView().findViewById(R.id.my_switcher3);
                 ViewSwitcher switcher4 = (ViewSwitcher) getView().findViewById(R.id.my_switcher4);
                 ViewSwitcher switcher5 = (ViewSwitcher) getView().findViewById(R.id.my_switcher5);
+                ViewSwitcher switcher6 = (ViewSwitcher) getView().findViewById(R.id.my_switcher6);
 
                 String newName = hidden1.getText().toString();
                 String newAge = hidden2.getText().toString();
                 String newDegree = hidden3.getText().toString();
                 String newContact = hidden4.getText().toString();
                 String newDesc = hidden5.getText().toString();
+                String newSuburb = hidden6.getText().toString();
 
                 //savinng it to entity name
                 FirebaseDatabase userDatabaseProfile = FirebaseDatabase.getInstance();
@@ -431,11 +441,13 @@ public class MainActivity extends Fragment {
                 //contact
                 userDatabaseReferenceProfile.child("Users").child(userID).child("contact").setValue(newContact);
                 //description
+                userDatabaseReferenceProfile.child("Users").child(userID).child("suburb").setValue(newSuburb);
                 //userDatabaseReferenceProfile.child("Users").child(userID).child("description").setValue(newDesc);
-
+                userDatabaseReferenceProfile.child("Users").child(userID).child("description").setValue(newDesc);
                 profileName.setText(newName);
                 profileAge.setText(newAge);
                 profileContact.setText(newContact);
+                profileSuburb.setText(newSuburb);
                 profileDegree.setText(newDegree);
                 profileDesc.setText(newDesc);
 
@@ -444,6 +456,7 @@ public class MainActivity extends Fragment {
                 switcher3.showPrevious();
                 switcher4.showPrevious();
                 switcher5.showPrevious();
+                switcher6.showPrevious();
             }
 
         });
@@ -465,11 +478,15 @@ public class MainActivity extends Fragment {
                 userEntity.setAge(ds.child(userID).getValue(UserEntity.class).getAge());
                 userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
+                userEntity.setSuburb(ds.child(userID).getValue(UserEntity.class).getSuburb());
+                userEntity.setDescription(ds.child(userID).getValue(UserEntity.class).getDescription());
 
                 profileName.setText(userEntity.getName());
-                profileAge.setText(" " + userEntity.getAge());
+                profileAge.setText(userEntity.getAge());
                 profileDegree.setText(userEntity.getDegree());
-                profileContact.setText(" " + userEntity.getContact());
+                profileContact.setText(userEntity.getContact());
+                profileSuburb.setText(userEntity.getSuburb());
+                profileDesc.setText(userEntity.getDescription());
             }
         }
 

@@ -1,8 +1,7 @@
 package com.vinguyen.tutorme3;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.icu.lang.UCharacter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import java.util.List;
-import java.util.Random;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,11 +21,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.List;
+
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText inputEmail, inputPassword, inputName, inputAge, inputDegree, inputContact, captchaText;
+    private EditText inputEmail, inputPassword, inputName, inputAge, inputDegree, inputContact, inputSuburb, captchaText, inputDescription;
     private Button btnSignIn, btnSignUp, btnNext;
-    private String email, password, name, age, degree, contact;
+    private String email, password, name, age, degree, contact, suburb, description;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     protected Bitmap image;
@@ -62,6 +58,8 @@ public class SignupActivity extends AppCompatActivity {
         inputAge = (EditText) findViewById(R.id.age);
         inputDegree = (EditText) findViewById(R.id.degree);
         inputContact = (EditText) findViewById(R.id.contact);
+        inputSuburb = (EditText) findViewById(R.id.suburb);
+        inputDescription = (EditText) findViewById(R.id.description);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         btnSignUp.setVisibility(View.GONE);
@@ -69,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
         inputAge.setVisibility(View.GONE);
         inputDegree.setVisibility(View.GONE);
         inputContact.setVisibility(View.GONE);
+        inputSuburb.setVisibility(View.GONE);
 
         imageView1 = (ImageView)findViewById(R.id.imageView);
         captchaText = (EditText) findViewById(R.id.captchaText);
@@ -130,6 +129,7 @@ public class SignupActivity extends AppCompatActivity {
                                     inputAge.setVisibility(View.VISIBLE);
                                     inputDegree.setVisibility(View.VISIBLE);
                                     inputContact.setVisibility(View.VISIBLE);
+                                    inputSuburb.setVisibility(View.VISIBLE);
                                 }
                             }
                         });
@@ -139,14 +139,16 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 name = inputName.getText().toString().trim();
                 age = inputAge.getText().toString().trim();
                 degree = inputDegree.getText().toString().trim();
                 contact = inputContact.getText().toString().trim();
+                suburb = inputSuburb.getText().toString().trim();
+                description = inputDescription.getText().toString().trim();
 
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(age) || TextUtils.isEmpty(degree) || TextUtils.isEmpty(contact)) {
-                    Toast.makeText(getApplicationContext(), "All fields must be filled in!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(age) || TextUtils.isEmpty(degree) || TextUtils.isEmpty(contact) || TextUtils.isEmpty(suburb)|| TextUtils.isEmpty(description)) {
+                    String empty = getResources().getString(R.string.empty);
+                    Toast.makeText(getApplicationContext(), empty, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -154,7 +156,7 @@ public class SignupActivity extends AppCompatActivity {
                 DatabaseReference userDatabaseReference = userDatabase.getReference("Users");
                 FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                UserEntity userEntity = new UserEntity(name, age, degree, contact);
+                UserEntity userEntity = new UserEntity(name, age, degree, contact, suburb, description);
                 userDatabaseReference.child(currentFirebaseUser.getUid()).setValue(userEntity);
 
                 startActivity(new Intent(SignupActivity.this, NavigationDrawerActivity.class));
@@ -164,6 +166,8 @@ public class SignupActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     @Override

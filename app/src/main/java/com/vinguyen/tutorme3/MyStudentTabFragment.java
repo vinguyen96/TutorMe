@@ -30,28 +30,35 @@ public class MyStudentTabFragment extends Fragment{
 
     }
 
+    private String course;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_my_student_tab,container, false);
 
         ViewPager viewPager = (ViewPager)rootView.findViewById(R.id.pager);
-        setupViewPager(viewPager);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            course = bundle.getString("course");
+        }
+        setupViewPager(viewPager, course);
         TabLayout tabs = (TabLayout)rootView.findViewById(R.id.fixture_tabs);
         tabs.setupWithViewPager(viewPager);
         return rootView;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, String course) {
         Adapter adapter = new Adapter(getChildFragmentManager());
         Activity activity = getActivity();
         String pending = activity.getResources().getString(R.string.pending);
         String rejected = activity.getResources().getString(R.string.rejected);
         String accepted = activity.getResources().getString(R.string.accepted);
-        StudentPendingFragment studentPendingFragment = new StudentPendingFragment();
-        adapter.addFragment(studentPendingFragment, pending);
-        adapter.addFragment(new StudentAcceptedFragment(), accepted);
-        adapter.addFragment(new StudentRejectedFragment(), rejected);
+        String withdraw = activity.getResources().getString(R.string.withdraw);
+        adapter.addFragment(new StudentPendingFragment(), pending, course);
+        adapter.addFragment(new StudentAcceptedFragment(), accepted, course);
+        adapter.addFragment(new StudentRejectedFragment(), rejected, course);
+        adapter.addFragment(new WithdrawFragment(), withdraw, course);
         viewPager.setAdapter(adapter);
 
     }
@@ -74,9 +81,12 @@ public class MyStudentTabFragment extends Fragment{
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        public void addFragment(Fragment fragment, String title, String course) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
+            Bundle mBundle=new Bundle();
+            mBundle.putString("course", course);
+            fragment.setArguments(mBundle);
         }
 
         @Override

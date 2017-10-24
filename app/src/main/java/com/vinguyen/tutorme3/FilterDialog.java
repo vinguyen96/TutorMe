@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -19,7 +21,9 @@ public class FilterDialog extends Dialog implements
 
     public Button cancel, apply;
     public CheckBox monday, tuesday, wednesday, thursday, friday, saturday, sunday;
+    public Spinner suburbSpinner;
     public ArrayList<String> array;
+    public String suburb;
 
     public FilterDialog(Activity a) {
         super(a);
@@ -36,6 +40,19 @@ public class FilterDialog extends Dialog implements
         this.onCustomDialogEventListener = onCustomDialogEventListener;
     }
 
+    public FilterDialog(Activity a, String filterSuburb, ICustomDialogEventListener onCustomDialogEventListener) {
+        super(a);
+        this.suburb = filterSuburb;
+        this.onCustomDialogEventListener = onCustomDialogEventListener;
+    }
+
+    public FilterDialog(Activity a, ArrayList<String> arrayPass, String filterSuburb, ICustomDialogEventListener onCustomDialogEventListener) {
+        super(a);
+        this.array = arrayPass;
+        this.suburb = filterSuburb;
+        this.onCustomDialogEventListener = onCustomDialogEventListener;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +62,7 @@ public class FilterDialog extends Dialog implements
         cancel = (Button) findViewById(R.id.cancel);
         apply = (Button) findViewById(R.id.apply);
 
+        suburbSpinner=(Spinner) findViewById(R.id.spinner_suburb);
         monday = (CheckBox) findViewById(R.id.checkBoxMonday);
         tuesday = (CheckBox) findViewById(R.id.checkBoxTuesday);
         wednesday = (CheckBox) findViewById(R.id.checkBoxWednesday);
@@ -52,6 +70,14 @@ public class FilterDialog extends Dialog implements
         friday = (CheckBox) findViewById(R.id.checkBoxFriday);
         saturday = (CheckBox) findViewById(R.id.checkBoxSaturday);
         sunday = (CheckBox) findViewById(R.id.checkBoxSunday);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.alphabet_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        suburbSpinner.setAdapter(adapter);
+        if (suburb != null) {
+            int spinnerPosition = adapter.getPosition(suburb);
+            suburbSpinner.setSelection(spinnerPosition);
+        }
 
         if (array != null) {
             if (array.contains("monday")) {
@@ -81,6 +107,8 @@ public class FilterDialog extends Dialog implements
             @Override
             public void onClick(View view) {
                 ArrayList<String> availability = new ArrayList<String>();
+                suburb = suburbSpinner.getSelectedItem().toString();
+
                 if (monday.isChecked()) {
                     availability.add("monday");
                 }
@@ -103,7 +131,7 @@ public class FilterDialog extends Dialog implements
                     availability.add("sunday");
                 }
 
-                onCustomDialogEventListener.customDialogEvent(availability);
+                onCustomDialogEventListener.customDialogEvent(availability, suburb);
                 dismiss();
             }
         });
@@ -124,7 +152,7 @@ public class FilterDialog extends Dialog implements
     private ICustomDialogEventListener onCustomDialogEventListener;
 
     public interface ICustomDialogEventListener {
-        public void customDialogEvent(ArrayList<String> array);
+        public void customDialogEvent(ArrayList<String> array, String string);
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 
 public class TutorPendingFragment extends Fragment {
-    private String userID, userIDCurrent;
+    private String userID, userIDCurrent, course;
     private Activity activity;
     DatabaseReference databaseRef;
     ArrayList<String> tutors, availability;
@@ -38,13 +38,18 @@ public class TutorPendingFragment extends Fragment {
         tutors = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            course = bundle.getString("course");
+        }
+
         mRecyclerView = (RecyclerView)rootView.findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(activity);
 
         databaseRef = FirebaseDatabase.getInstance().getReference();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child(course).child("Tutors").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {
@@ -134,10 +139,15 @@ public class TutorPendingFragment extends Fragment {
                     @Override
                     public void onItemClick(int position, View v) {
                         DataObject dObj = (DataObject) results.get(position);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("message", ((DataObject) results.get(position)).getUserID());
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putString("userID", ((DataObject) results.get(position)).getUserID());
+                        Bundle bundle2 = new Bundle();
+                        bundle2.putString("course", course);
+                        Bundle mainBundle = new Bundle();
+                        mainBundle.putBundle("userID", bundle1);
+                        mainBundle.putBundle("course", bundle2);
                         TutorProfileViewFragment fragment = new TutorProfileViewFragment();
-                        fragment.setArguments(bundle);
+                        fragment.setArguments(mainBundle);
                         getParentFragment().getFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, fragment)
                                 .addToBackStack(null)
@@ -158,7 +168,7 @@ public class TutorPendingFragment extends Fragment {
     public void checkIfTutor (final String tutorID) {
         if (userID != null) {
             userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(tutorID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child(course).child("Tutors").child(tutorID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot student : dataSnapshot.getChildren()) {

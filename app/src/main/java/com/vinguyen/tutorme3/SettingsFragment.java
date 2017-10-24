@@ -2,9 +2,12 @@ package com.vinguyen.tutorme3;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Locale;
+
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,11 +32,13 @@ import com.google.firebase.auth.FirebaseUser;
 public class SettingsFragment extends Fragment {
 
     private Button btnChangeEmail, btnChangePassword, btnSendResetEmail, btnRemoveUser,
-            changeEmail, changePassword, sendEmail, remove;
+            changeEmail, changePassword, sendEmail, remove, changeLanguage;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private EditText oldEmail, newEmail, password, newPassword;
+    private static final String FILE_NAME = "file_lang";
+    private static final String KEY_LANG = "key_lang";
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -50,6 +59,7 @@ public class SettingsFragment extends Fragment {
         changePassword = (Button) rootView.findViewById(R.id.changePass);
         sendEmail = (Button) rootView.findViewById(R.id.send);
         remove = (Button) rootView.findViewById(R.id.remove);
+        changeLanguage = (Button) rootView.findViewById(R.id.change_language);
 
         oldEmail = (EditText) rootView.findViewById(R.id.old_email);
         newEmail = (EditText) rootView.findViewById(R.id.new_email);
@@ -238,7 +248,66 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        changeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final LanguageDialog dialog = new LanguageDialog(getActivity(), new LanguageDialog.SCustomDialogEventListener() {
+                    @Override
+                    public void customDialogEvent(String language) {
+                        String chosenLanguage = language;
+                        if (chosenLanguage != null) {
+                            Log.d("CHOSENLANGUAGE", chosenLanguage);
+                        }
+                        if (chosenLanguage.equals("English")){
+                            saveLanguage("en");
+                        }
+                        else if (chosenLanguage.equals("中文")) {
+                            saveLanguage("zh");
+                        }
+                        else if (chosenLanguage.equals("한국어")) {
+                            saveLanguage("ko");
+                        }
+                    }
+                });
+                dialog.show();
+            }
+        });
+
         return rootView;
+    }
+
+    private void saveLanguage(String lang) {
+
+
+        // we can use this method to save language
+        SharedPreferences preferences = this.getActivity().getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(KEY_LANG, lang);
+        editor.apply();
+        // we have saved
+        // recreate activity after saving to load the new language, this is the same
+        // as refreshing activity to load new language
+
+        getActivity().recreate();
+
+    }
+
+    private void loadLanguage() {
+        // we can use this method to load language,
+        // this method should be called before setContentView() method of the onCreate method
+
+        Locale locale = new Locale(getLangCode());
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+    private String getLangCode() {
+        SharedPreferences preferences = this.getActivity().getSharedPreferences(FILE_NAME, MODE_PRIVATE);
+        String langCode = preferences.getString(KEY_LANG, "en");
+        // save english 'en' as the default language
+        return langCode;
     }
 
     public void signOut() {

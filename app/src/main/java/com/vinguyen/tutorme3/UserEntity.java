@@ -8,6 +8,7 @@ public class UserEntity {
     public String name;
     public String age;
     public String degree;
+    public String suburb;
     public String contact;
     public String monday;
     public String tuesday;
@@ -16,6 +17,7 @@ public class UserEntity {
     public String friday;
     public String saturday;
     public String sunday;
+    public String description;
 
     public UserEntity() {
         this.monday = "no";
@@ -43,11 +45,12 @@ public class UserEntity {
         this.contact = contact;
     }
 
-    public UserEntity(String name, String age, String degree, String contact) {
+    public UserEntity(String name, String age, String degree, String contact, String suburb, String description) {
         this.name = name;
         this.age = age;
         this.degree = degree;
         this.contact = contact;
+        this.suburb = suburb;
         this.monday = "no";
         this.tuesday = "no";
         this.wednesday = "no";
@@ -55,6 +58,7 @@ public class UserEntity {
         this.friday = "no";
         this.saturday = "no";
         this.sunday = "no";
+        this.description = description;
 
     }
 
@@ -128,5 +132,21 @@ public class UserEntity {
 
     public String getContact() {
         return contact;
+    }
+
+    public String getSuburb() {
+        return suburb;
+    }
+
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

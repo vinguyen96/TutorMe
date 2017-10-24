@@ -34,7 +34,7 @@ import com.google.firebase.storage.StorageReference;
 public class StudentProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, userDatabaseReference, databaseRef;
-    private TextView profileName, profileAge, profileDegree, profileContact,noOfStudentLikes,noOfTutorLikes, contact;
+    private TextView profileName, profileAge, profileDegree, profileContact,profileSuburb,profileDescription,noOfStudentLikes,noOfTutorLikes, contact,suburb, description;
     private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
     private String userID;
     private Button acceptBtn, rejectBtn, likeBtn;
@@ -48,7 +48,7 @@ public class StudentProfileViewFragment extends Fragment {
     private String saturdayAvailability = "no";
     private String sundayAvailability = "no";
     private Bitmap bImageMonday;
-    private String userIDCurrent;
+    private String userIDCurrent, course;
     private Activity activity;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,8 +57,16 @@ public class StudentProfileViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_student_profile_view, container, false);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            userID = bundle.getString("message");
+            Bundle bundle1 = bundle.getBundle("userID");
+            Bundle bundle2 = bundle.getBundle("course");
+            if (bundle1 != null){
+                userID = bundle1.getString("userID");
+            }
+            if (bundle2 != null) {
+                course = bundle2.getString("course");
+            }
         }
+
         activity = getActivity();
         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -70,6 +78,10 @@ public class StudentProfileViewFragment extends Fragment {
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
         contact = (TextView) rootView.findViewById(R.id.contact);
+        profileSuburb=(TextView) rootView.findViewById(R.id.profileSuburb);
+        suburb = (TextView) rootView.findViewById(R.id.suburb);
+        profileDescription=(TextView) rootView.findViewById(R.id.profileDesc);
+        description = (TextView) rootView.findViewById(R.id.desc);
         profileContact.setVisibility(View.GONE);
         contact.setVisibility(View.GONE);
 
@@ -148,7 +160,7 @@ public class StudentProfileViewFragment extends Fragment {
             public void onClick(View view) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Log.d("USERID", userID);
-                    userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
+                    userDatabaseReference.child(course).child("Tutors").child(userIDCurrent).child(userID).setValue("accepted");
                     MyStudentTabFragment fragment = new MyStudentTabFragment();
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     manager.beginTransaction().replace(R.id.fragment_container, fragment)
@@ -162,7 +174,7 @@ public class StudentProfileViewFragment extends Fragment {
             public void onClick(View view) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Log.d("USERID", userID);
-                    userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).child(userID).setValue("rejected");
+                    userDatabaseReference.child(course).child("Tutors").child(userIDCurrent).child(userID).setValue("rejected");
                     MyStudentTabFragment fragment = new MyStudentTabFragment();
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
@@ -236,11 +248,15 @@ public class StudentProfileViewFragment extends Fragment {
                 userEntity.setAge(ds.child(userID).getValue(UserEntity.class).getAge());
                 userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
+                userEntity.setSuburb(ds.child(userID).getValue(UserEntity.class).getSuburb());
+                userEntity.setDescription(ds.child(userID).getValue(UserEntity.class).getDescription());
 
                 profileName.setText(userEntity.getName());
                 profileAge.setText(userEntity.getAge());
                 profileDegree.setText(userEntity.getDegree());
                 profileContact.setText(userEntity.getContact());
+                profileSuburb.setText(userEntity.getSuburb());
+                profileDescription.setText(userEntity.getDescription());
             }
         }
 
@@ -530,7 +546,7 @@ public class StudentProfileViewFragment extends Fragment {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child(course).child("Tutors").child(userIDCurrent).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot tutor : dataSnapshot.getChildren()) {

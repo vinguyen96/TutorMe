@@ -45,10 +45,34 @@
 
     <string name="action_settings">Settings</string>
 
-    <string-array name="language_array">
-        <item>English</item>
-        <item>Korean</item>
-        <item>Mandarin</item>
+    <string-array name="alphabet_array">
+        <item> </item>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
     </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -68,6 +92,9 @@
     <string name="sort">Sort</string>
     <string name="becomeTutorToast">You have successfully signed up as a tutor!</string>
     <string name="searchAndBecome">Search for a course and become a tutor:</string>
+    <string name="searchAndChoose">Search for a course and choose a tutor:</string>
+    <string name="searchAndChooseStudent">Search for a course and show my Students:</string>
+    <string name="searchAndChooseTutor">Search for a course and show my Tutors:</string>
     <string name="becomeATutor">Become a tutor</string>
     <string name="becomeAStudent">Become a student</string>
     <string name="reqSent">Request Sent</string>
@@ -83,4 +110,12 @@
     <string name="like">Like</string>
     <string name="unlike">Unlike</string>
     <string name="cantonese">Cantonese</string>
+    <string name="hint_suburb">Suburb:</string>
+    <string name="find_class">Find Class</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="withdrawFrom">Withdraw from:</string>
+    <string name="showMyStudents">Show My Students</string>
+    <string name="showMyTutors">Show My Tutors</string>
+    <string name="changeLanguage">Change Language</string>
+    <string name="empty">All fields must be filled in!</string>
 </resources>

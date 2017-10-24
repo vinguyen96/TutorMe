@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingTop="20dp"
-        android:text="@string/searchAndBecome" />
+        android:text="@string/searchAndChooseTutor" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,9 +38,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="32dp"
-                android:background="#37ba93"
-                android:text="@string/becomeATutor"
-                android:textColor="@color/black"
+                android:background="#ce3c39"
+                android:text="@string/showMyTutors"
+                android:textColor="@color/white"
                 android:textStyle="bold"/>
 
         </LinearLayout>

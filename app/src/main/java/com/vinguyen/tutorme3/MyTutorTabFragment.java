@@ -30,13 +30,19 @@ public class MyTutorTabFragment extends Fragment {
 
     }
 
+    private String course;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_my_tutor_tab,container, false);
 
         ViewPager viewPager = (ViewPager)rootView.findViewById(R.id.pager);
-        setupViewPager(viewPager);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            course = bundle.getString("course");
+        }
+        setupViewPager(viewPager, course);
         TabLayout tabs = (TabLayout)rootView.findViewById(R.id.fixture_tabs);
         tabs.setupWithViewPager(viewPager);
 
@@ -44,15 +50,15 @@ public class MyTutorTabFragment extends Fragment {
         return rootView;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, String course) {
         Adapter adapter = new Adapter(getChildFragmentManager());
         Activity activity = getActivity();
         String pending = activity.getResources().getString(R.string.pending);
         String rejected = activity.getResources().getString(R.string.rejected);
         String accepted = activity.getResources().getString(R.string.accepted);
-        adapter.addFragment(new TutorPendingFragment(), pending);
-        adapter.addFragment(new TutorAcceptedFragment(), accepted);
-        adapter.addFragment(new TutorRejectedFragment(), rejected);
+        adapter.addFragment(new TutorPendingFragment(), pending, course);
+        adapter.addFragment(new TutorAcceptedFragment(), accepted, course);
+        adapter.addFragment(new TutorRejectedFragment(), rejected, course);
         viewPager.setAdapter(adapter);
 
     }
@@ -75,9 +81,12 @@ public class MyTutorTabFragment extends Fragment {
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        public void addFragment(Fragment fragment, String title, String course) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
+            Bundle mBundle=new Bundle();
+            mBundle.putString("course", course);
+            fragment.setArguments(mBundle);
         }
 
         @Override

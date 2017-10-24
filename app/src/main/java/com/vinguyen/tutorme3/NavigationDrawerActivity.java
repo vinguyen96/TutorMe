@@ -83,10 +83,18 @@ public class NavigationDrawerActivity extends AppCompatActivity
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userID = user.getUid();
+        }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://tutorme-61083.appspot.com/userProfileImages");
-        myRef = storageRef.child(userID + ".jpg");
+        if (userID !=null) {
+            myRef = storageRef.child(userID + ".jpg");
+        }
+        else {
+            myRef = storageRef.child("default.jpg");
+        }
         defaultRef = storageRef.child("default.jpg");
 
         if (NavigationDrawerActivity.this != null) {
@@ -171,7 +179,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.addToBackStack(null).commit();
         } else if (id == R.id.search) {
-            FindTutorFragment fragment = new FindTutorFragment();
+            FindClassFragment fragment = new FindClassFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -183,13 +191,13 @@ public class NavigationDrawerActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.addToBackStack(null).commit();
         } else if (id == R.id.myStudents) {
-            MyStudentTabFragment fragment = new MyStudentTabFragment();
+            FindStudentFragment fragment = new FindStudentFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.addToBackStack(null).commit();
         } else if (id == R.id.myTutors) {
-            MyTutorTabFragment fragment = new MyTutorTabFragment();
+            FindMyTutorFragment fragment = new FindMyTutorFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -264,17 +272,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
                         getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.addToBackStack(null).commit();
-                break;
-            case R.id.action_english:
-                saveLanguage("en");
-                break;
-
-            case R.id.action_korean:
-                saveLanguage("ko");
-                break;
-
-            case R.id.action_chinese:
-                saveLanguage("zh");
                 break;
         }
         return true;

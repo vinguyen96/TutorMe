@@ -26,7 +26,7 @@ public class StudentRejectedFragment extends Fragment {
     Activity activity;
     ArrayList<String> tutorsR, availabilityR;
     private static String LOG_TAG = "CardViewActivity";
-    private String userID;
+    private String userID, course;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +37,12 @@ public class StudentRejectedFragment extends Fragment {
 
         tutorsR = new ArrayList<String>();
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            course = bundle.getString("course");
+        }
+
         if (userID != null) {
             getDataSet();
         }
@@ -50,105 +56,113 @@ public class StudentRejectedFragment extends Fragment {
 
     public void getDataSet() {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-        ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (final DataSnapshot tutor : dataSnapshot.getChildren()) {
-                    if (tutor.getValue().equals("rejected")) {
-                        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-                        databaseRef.child("Users").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    if (ds.getKey().equals(tutor.getKey())) {
-                                        resultsR.clear();
-                                        FirebaseDatabase.getInstance().getReference().addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                UserEntity userEntity = new UserEntity();
-                                                String key = tutor.getKey();
-                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                                    if (ds.hasChild(key)) {
-                                                        userEntity.setName(ds.child(key).getValue(UserEntity.class).getName());
-                                                        userEntity.setDegree(ds.child(key).getValue(UserEntity.class).getDegree());
-                                                        userEntity.setMonday(ds.child(key).getValue(UserEntity.class).getMonday());
-                                                        userEntity.setTuesday(ds.child(key).getValue(UserEntity.class).getTuesday());
-                                                        userEntity.setWednesday(ds.child(key).getValue(UserEntity.class).getWednesday());
-                                                        userEntity.setThursday(ds.child(key).getValue(UserEntity.class).getThursday());
-                                                        userEntity.setFriday(ds.child(key).getValue(UserEntity.class).getFriday());
-                                                        userEntity.setSaturday(ds.child(key).getValue(UserEntity.class).getSaturday());
-                                                        userEntity.setSunday(ds.child(key).getValue(UserEntity.class).getSunday());
-                                                        if (availabilityR != null) {
-                                                            if (availabilityR.contains("monday") && userEntity.getMonday().equals("no")) {
-                                                                return;
+        if (userID != null && course != null) {
+            ValueEventListener valueEventListener = databaseRef.child(course).child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (final DataSnapshot tutor : dataSnapshot.getChildren()) {
+                        if (tutor.getValue().equals("rejected")) {
+                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+                            databaseRef.child("Users").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        if (ds.getKey().equals(tutor.getKey())) {
+                                            resultsR.clear();
+                                            FirebaseDatabase.getInstance().getReference().addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    UserEntity userEntity = new UserEntity();
+                                                    String key = tutor.getKey();
+                                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                        if (ds.hasChild(key)) {
+                                                            userEntity.setName(ds.child(key).getValue(UserEntity.class).getName());
+                                                            userEntity.setDegree(ds.child(key).getValue(UserEntity.class).getDegree());
+                                                            userEntity.setMonday(ds.child(key).getValue(UserEntity.class).getMonday());
+                                                            userEntity.setTuesday(ds.child(key).getValue(UserEntity.class).getTuesday());
+                                                            userEntity.setWednesday(ds.child(key).getValue(UserEntity.class).getWednesday());
+                                                            userEntity.setThursday(ds.child(key).getValue(UserEntity.class).getThursday());
+                                                            userEntity.setFriday(ds.child(key).getValue(UserEntity.class).getFriday());
+                                                            userEntity.setSaturday(ds.child(key).getValue(UserEntity.class).getSaturday());
+                                                            userEntity.setSunday(ds.child(key).getValue(UserEntity.class).getSunday());
+                                                            if (availabilityR != null) {
+                                                                if (availabilityR.contains("monday") && userEntity.getMonday().equals("no")) {
+                                                                    return;
+                                                                }
+                                                                if (availabilityR.contains("tuesday") && userEntity.getTuesday().equals("no")) {
+                                                                    return;
+                                                                }
+                                                                if (availabilityR.contains("wednesday") && userEntity.getWednesday().equals("no")) {
+                                                                    return;
+                                                                }
+                                                                if (availabilityR.contains("thursday") && userEntity.getThursday().equals("no")) {
+                                                                    return;
+                                                                }
+                                                                if (availabilityR.contains("friday") && userEntity.getFriday().equals("no")) {
+                                                                    return;
+                                                                }
+                                                                if (availabilityR.contains("saturday") && userEntity.getSaturday().equals("no")) {
+                                                                    return;
+                                                                }
+                                                                if (availabilityR.contains("sunday") && userEntity.getSunday().equals("no")) {
+                                                                    return;
+                                                                }
                                                             }
-                                                            if (availabilityR.contains("tuesday") && userEntity.getTuesday().equals("no")) {
-                                                                return;
-                                                            }
-                                                            if (availabilityR.contains("wednesday") && userEntity.getWednesday().equals("no")) {
-                                                                return;
-                                                            }
-                                                            if (availabilityR.contains("thursday") && userEntity.getThursday().equals("no")) {
-                                                                return;
-                                                            }
-                                                            if (availabilityR.contains("friday") && userEntity.getFriday().equals("no")) {
-                                                                return;
-                                                            }
-                                                            if (availabilityR.contains("saturday") && userEntity.getSaturday().equals("no")) {
-                                                                return;
-                                                            }
-                                                            if (availabilityR.contains("sunday") && userEntity.getSunday().equals("no")) {
-                                                                return;
-                                                            }
+                                                            DataObject obj = new DataObject(userEntity.getName(), userEntity.getDegree(), key);
+                                                            resultsR.add(obj);
                                                         }
-                                                        DataObject obj = new DataObject(userEntity.getName(), userEntity.getDegree(), key);
-                                                        resultsR.add(obj);
                                                     }
+
+                                                    mAdapterR = new MyRecyclerViewAdapter(resultsR);
+                                                    mRecyclerViewR.setLayoutManager(mLayoutManagerR);
+                                                    mRecyclerViewR.setAdapter(mAdapterR);
+
+                                                    ((MyRecyclerViewAdapter) mAdapterR).setOnItemClickListener(new MyRecyclerViewAdapter
+                                                            .MyClickListener() {
+                                                        @Override
+                                                        public void onItemClick(int position, View v) {
+                                                            DataObject dObj = (DataObject) resultsR.get(position);
+                                                            Bundle bundle1 = new Bundle();
+                                                            bundle1.putString("userID", ((DataObject) resultsR.get(position)).getUserID());
+                                                            Bundle bundle2 = new Bundle();
+                                                            bundle2.putString("course", course);
+                                                            Bundle mainBundle = new Bundle();
+                                                            mainBundle.putBundle("userID", bundle1);
+                                                            mainBundle.putBundle("course", bundle2);
+                                                            StudentProfileViewFragment fragment = new StudentProfileViewFragment();
+                                                            fragment.setArguments(mainBundle);
+                                                            getParentFragment().getFragmentManager().beginTransaction()
+                                                                    .replace(R.id.fragment_container, fragment)
+                                                                    .addToBackStack(null)
+                                                                    .commit();
+
+                                                            //Log.i(LOG_TAG, " Clicked on Item " + position);
+                                                        }
+                                                    });
                                                 }
 
-                                                mAdapterR = new MyRecyclerViewAdapter(resultsR);
-                                                mRecyclerViewR.setLayoutManager(mLayoutManagerR);
-                                                mRecyclerViewR.setAdapter(mAdapterR);
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 
-                                                ((MyRecyclerViewAdapter) mAdapterR).setOnItemClickListener(new MyRecyclerViewAdapter
-                                                        .MyClickListener() {
-                                                    @Override
-                                                    public void onItemClick(int position, View v) {
-                                                        DataObject dObj = (DataObject) resultsR.get(position);
-                                                        Bundle bundle = new Bundle();
-                                                        bundle.putString("message", ((DataObject) resultsR.get(position)).getUserID());
-                                                        StudentProfileViewFragment fragment = new StudentProfileViewFragment();
-                                                        fragment.setArguments(bundle);
-                                                        getParentFragment().getFragmentManager().beginTransaction()
-                                                                .replace(R.id.fragment_container, fragment)
-                                                                .addToBackStack(null)
-                                                                .commit();
-
-                                                        //Log.i(LOG_TAG, " Clicked on Item " + position);
-                                                    }
-                                                });
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
+                                                }
+                                            });
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
                     }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 }

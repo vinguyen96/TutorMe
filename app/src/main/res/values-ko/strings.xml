@@ -74,4 +74,13 @@
     <string name="rejected">거절된</string>
     <string name="like">좋아요</string>
     <string name="unlike">싫어요</string>
+    <string name="searchAndChoose">과목을 찾고 선생님을 선택하세요:</string>
+    <string name="searchAndChooseStudent">과목을 찾고 내 학생들 보기:</string>
+    <string name="searchAndChooseTutor">과목을 찾고 내 선생님들 보기:</string>
+    <string name="showMyStudents">내 학생들 보기</string>
+    <string name="showMyTutors">내 선생님들 보기</string>
+    <string name="hint_suburb">도시:</string>
+    <string name="find_class">수업 찾기</string>
+    <string name="withdraw">취소</string>
+    <string name="withdrawFrom">취소:</string>
 </resources>

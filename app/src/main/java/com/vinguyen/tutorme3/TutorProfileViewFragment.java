@@ -37,11 +37,11 @@ public class TutorProfileViewFragment extends Fragment {
     private FirebaseDatabase userDatabaseCreate;
     private DatabaseReference userReference, databaseRef;
     private FirebaseAuth.AuthStateListener authListener;
-    private TextView profileName, profileAge, profileDegree, profileContact, reqAccepted, reqSent, reqRejected, noOfTutorLikes, noOfStudentLikes, contact;
+    private TextView profileName, profileAge, profileDegree, profileContact, profileSuburb, profileDescription, reqAccepted, reqSent, reqRejected, noOfTutorLikes, noOfStudentLikes, contact, suburb, description;
     private ImageView imgView, mondayView, tuesdayView, wednesdayView, thursdayView, fridayView, saturdayView, sundayView;
-    private String userID, currentUserID;
+    private String userID, currentUserID, course;
     private StorageReference myRef, defaultRef, storageRef;
-    private Button becomeStudent, likeBtn;
+    private Button becomeStudent, likeBtn, withdrawBtn;
     private FirebaseDatabase userDatabase;
     private FirebaseAuth auth;
     private int PICK_IMAGE_REQUEST = 111;
@@ -64,8 +64,17 @@ public class TutorProfileViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_user_view, container, false);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            userID = bundle.getString("message");
+            Bundle bundle1 = bundle.getBundle("userID");
+            Bundle bundle2 = bundle.getBundle("course");
+            if (bundle1 != null){
+                userID = bundle1.getString("userID");
+            }
+            if (bundle2 != null) {
+                course = bundle2.getString("course");
+                Log.d("COURSECLICKED", course);
+            }
         }
+
         activity = getActivity();
         auth = FirebaseAuth.getInstance();
 
@@ -95,7 +104,11 @@ public class TutorProfileViewFragment extends Fragment {
         profileAge=(TextView) rootView.findViewById(R.id.profileAge);
         profileDegree=(TextView) rootView.findViewById(R.id.profileDegree);
         profileContact=(TextView) rootView.findViewById(R.id.profileContact);
+        profileSuburb=(TextView) rootView.findViewById(R.id.profileSuburb);
+        profileDescription=(TextView) rootView.findViewById(R.id.profileDesc);
         contact = (TextView)rootView.findViewById(R.id.contact);
+        suburb = (TextView)rootView.findViewById(R.id.suburb);
+        description = (TextView)rootView.findViewById(R.id.desc);
         reqAccepted =(TextView) rootView.findViewById(R.id.reqAccepted);
         reqSent =(TextView) rootView.findViewById(R.id.reqSent);
         reqRejected =(TextView) rootView.findViewById(R.id.reqRejected);
@@ -106,7 +119,6 @@ public class TutorProfileViewFragment extends Fragment {
         reqRejected.setVisibility(View.GONE);
 
         imgView=(ImageView) rootView.findViewById(R.id.imgView);
-        Log.d("PLEASEE", Integer.toString(getFragmentManager().getBackStackEntryCount()));
 
         userDatabase = FirebaseDatabase.getInstance();
         userReference = userDatabase.getReference();
@@ -119,7 +131,6 @@ public class TutorProfileViewFragment extends Fragment {
             userReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("CHECKPOINT", userID);
                     showData(dataSnapshot);
                 }
 
@@ -132,6 +143,8 @@ public class TutorProfileViewFragment extends Fragment {
         becomeStudent=(Button)rootView.findViewById(R.id.becomeStudent);
         likeBtn=(Button)rootView.findViewById(R.id.like);
         likeBtn.setVisibility(View.GONE);
+        withdrawBtn=(Button)rootView.findViewById(R.id.withdraw);
+        withdrawBtn.setVisibility(View.GONE);
 
         userDatabase=FirebaseDatabase.getInstance();
         userDatabaseReference=userDatabase.getReference("Courses");
@@ -142,8 +155,7 @@ public class TutorProfileViewFragment extends Fragment {
                 public void onClick(View view) {
                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                         userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        Log.d("USERID", userID);
-                        userDatabaseReference.child("INFS1609").child("Tutors").child(userID).child(userIDCurrent).setValue("pending");
+                        userDatabaseReference.child(course).child("Tutors").child(userID).child(userIDCurrent).setValue("pending");
                     }
                 }
                 });
@@ -187,7 +199,23 @@ public class TutorProfileViewFragment extends Fragment {
                     }
                 });
 
-
+        withdrawBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference userDatabaseReference = userDatabase.getReference();
+                    userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    userDatabaseReference.child(course).child("Tutors").child(userIDCurrent).removeValue();
+                    userDatabaseReference.child("Courses").child(course).child("Tutors").child(userIDCurrent).removeValue();
+                    FindClassFragment fragment = new FindClassFragment();
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+        });
 
         likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,11 +258,15 @@ public class TutorProfileViewFragment extends Fragment {
                 userEntity.setAge(ds.child(userID).getValue(UserEntity.class).getAge());
                 userEntity.setDegree(ds.child(userID).getValue(UserEntity.class).getDegree());
                 userEntity.setContact(ds.child(userID).getValue(UserEntity.class).getContact());
+                userEntity.setSuburb(ds.child(userID).getValue(UserEntity.class).getSuburb());
+                userEntity.setDescription(ds.child(userID).getValue(UserEntity.class).getDescription());
 
                 profileName.setText(userEntity.getName());
                 profileAge.setText(userEntity.getAge());
                 profileDegree.setText(userEntity.getDegree());
                 profileContact.setText(userEntity.getContact());
+                profileSuburb.setText(userEntity.getSuburb());
+                profileDescription.setText(userEntity.getDescription());
             }
         }
     }
@@ -523,15 +555,17 @@ public class TutorProfileViewFragment extends Fragment {
     public void checkIfTutor () {
         databaseRef = FirebaseDatabase.getInstance().getReference();
         if (userID != null) {
-            ValueEventListener valueEventListener = databaseRef.child("INFS1609").child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
+            ValueEventListener valueEventListener = databaseRef.child(course).child("Tutors").child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Log.d("CURRENTID", userIDCurrent + " " +userID);
+                    if (userIDCurrent.equals(userID)) {
+                        becomeStudent.setVisibility(View.GONE);
+                        withdrawBtn.setVisibility(View.VISIBLE);
+                    }
                     for (DataSnapshot tutor : dataSnapshot.getChildren()) {
-                        if (userIDCurrent.equals(userID)) {
-                            becomeStudent.setVisibility(View.GONE);
-                        }
-                        else if (tutor.getValue().equals("pending") && tutor.getKey().equals(userIDCurrent)) {
+                        if (tutor.getValue().equals("pending") && tutor.getKey().equals(userIDCurrent)) {
                             reqSent.setVisibility(View.VISIBLE);
                             becomeStudent.setVisibility(View.GONE);
                         } else if (tutor.getValue().equals("rejected") && tutor.getKey().equals(userIDCurrent)) {

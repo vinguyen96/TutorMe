@@ -214,39 +214,111 @@
                     android:textColor="@android:color/black" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/profileDesc"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:gravity="left"
-                android:maxLines="10"
-                android:text="@string/hint_contact"
-                android:textColor="@android:color/black" />
+                android:background="@drawable/profileborder"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/suburb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="@string/hint_suburb"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/profileSuburb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:text="@string/hint_suburb"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profileborder"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="@string/description"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/profileDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:text="@string/description"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:weightSum="2"
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/acceptBtn"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/rejectBtn"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_vertical_margin"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="#f22121"
+                    android:gravity="center"
                     android:layout_weight="1"
-                    android:text="@string/accept" />
+                    android:text="@string/reject"
+                    android:textColor="@color/white" />
 
                 <Button
-                    android:id="@+id/rejectBtn"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/acceptBtn"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="#00eb07"
+                    android:gravity="center"
                     android:layout_weight="1"
-                    android:text="@string/reject" />
+                    android:text="@string/accept"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 

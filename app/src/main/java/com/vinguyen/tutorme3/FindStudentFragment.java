@@ -23,29 +23,43 @@ import com.google.firebase.database.ValueEventListener;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BecomeTutorFragment extends Fragment {
+public class FindStudentFragment extends Fragment {
     private AutoCompleteTextView courseAC;
     private String userID, name;
     private FirebaseDatabase userDatabase;
     private DatabaseReference userReference;
-    private Button becomeTutor;
+    private Button findStudent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_become_tutor, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_find_student, container, false);
 
         courseAC = (AutoCompleteTextView)rootView.findViewById(R.id.courseAC);
-        becomeTutor = (Button)rootView.findViewById(R.id.findTutor);
+        findStudent = (Button)rootView.findViewById(R.id.findTutor);
 
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
         databaseRef.child("Courses").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
-                    String suggestion = suggestionSnapshot.child("CourseName").getValue(String.class);
-                    autoComplete.add(suggestion);
+                for (final DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
+                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+                    databaseRef.child("Courses").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.d("KEYKEY", suggestionSnapshot.getKey());
+                            if (dataSnapshot.child(suggestionSnapshot.getKey()).child("Tutors").hasChild(userID))  {
+                                String suggestion = suggestionSnapshot.child("CourseName").getValue(String.class);
+                                autoComplete.add(suggestion);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
@@ -72,19 +86,26 @@ public class BecomeTutorFragment extends Fragment {
             });
         }
 
-        becomeTutor.setOnClickListener(new View.OnClickListener() {
+        findStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference userDatabaseReference = userDatabase.getReference();
                 String course = courseAC.getText().toString().trim();
-                userDatabaseReference.child("Courses").child(course).child("Tutors").child(userID).setValue(name);
-                FindClassFragment fragment = new FindClassFragment();
+                if (course.equals("")) {
+                    String empty = getResources().getString(R.string.empty);
+                    Toast.makeText(getActivity().getApplicationContext(), empty, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                Bundle bundle = new Bundle();
+                bundle.putString("course", course);
+                MyStudentTabFragment fragment = new MyStudentTabFragment();
+                fragment.setArguments(bundle);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
-                Toast.makeText(getActivity(), getString(R.string.becomeTutorToast), Toast.LENGTH_LONG).show();
+                }
             }
         });
 

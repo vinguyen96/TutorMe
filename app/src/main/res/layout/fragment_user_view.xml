@@ -167,7 +167,7 @@
 
                 <TextView
                     android:id="@+id/profileAge"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:textSize="16dp"
@@ -203,7 +203,7 @@
 
             <TextView
                 android:id="@+id/profileContact"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
                 android:layout_margin="8dp"
@@ -214,24 +214,92 @@
                 android:textColor="@android:color/black" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/profileDesc"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:gravity="left"
-                android:maxLines="10"
-                android:text="@string/hint_contact"
-                android:textColor="@android:color/black" />
+                android:background="@drawable/profileborder"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/suburb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="@string/hint_suburb"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/profileSuburb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:text="@string/hint_suburb"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profileborder"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="@string/description"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/profileDesc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:text="@string/description"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/becomeStudent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/becomeAStudent" />
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/colorAccent"
+                android:gravity="center"
+                android:text="@string/becomeAStudent"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/reqSent"
+                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -242,6 +310,7 @@
 
             <TextView
                 android:id="@+id/reqAccepted"
+                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -252,6 +321,7 @@
 
             <TextView
                 android:id="@+id/reqRejected"
+                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -269,6 +339,16 @@
                 android:background="@color/colorAccent"
                 android:gravity="center"
                 android:text="Like"
+                android:textColor="@color/white" />
+            <Button
+                android:id="@+id/withdraw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/colorAccent"
+                android:gravity="center"
+                android:text="@string/withdraw"
                 android:textColor="@color/white" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

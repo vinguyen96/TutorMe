@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BecomeTutorFragment extends Fragment {
+public class FindClassFragment extends Fragment {
     private AutoCompleteTextView courseAC;
     private String userID, name;
     private FirebaseDatabase userDatabase;
@@ -33,7 +33,7 @@ public class BecomeTutorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_become_tutor, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_find_class, container, false);
 
         courseAC = (AutoCompleteTextView)rootView.findViewById(R.id.courseAC);
         becomeTutor = (Button)rootView.findViewById(R.id.findTutor);
@@ -78,13 +78,20 @@ public class BecomeTutorFragment extends Fragment {
                 FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference userDatabaseReference = userDatabase.getReference();
                 String course = courseAC.getText().toString().trim();
-                userDatabaseReference.child("Courses").child(course).child("Tutors").child(userID).setValue(name);
-                FindClassFragment fragment = new FindClassFragment();
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
-                Toast.makeText(getActivity(), getString(R.string.becomeTutorToast), Toast.LENGTH_LONG).show();
+                if (course.equals("")) {
+                    String empty = getResources().getString(R.string.empty);
+                    Toast.makeText(getActivity().getApplicationContext(), empty, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("course", course);
+                    FindTutorFragment fragment = new FindTutorFragment();
+                    fragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 
