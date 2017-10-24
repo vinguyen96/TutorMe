@@ -288,7 +288,7 @@ public class FindTutorFragment extends Fragment {
                                                 noOfTutors = 0;
                                                 if (sortBy != null) {
                                                     Log.d("SORTBY", sortBy);
-                                                    if (sortBy.equals("Name")) {
+                                                    if (sortBy.equals("Full Name")) {
                                                         Collections.sort(results, new Comparator<DataObject>() {
                                                             @Override
                                                             public int compare(DataObject s1, DataObject s2) {
