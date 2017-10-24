@@ -116,6 +116,6 @@
     <string name="withdrawFrom">Withdraw from:</string>
     <string name="showMyStudents">Show My Students</string>
     <string name="showMyTutors">Show My Tutors</string>
-    <string name="changeLanguage">Change Language</string>
+    <string name="changeLanguage">Language</string>
     <string name="empty">All fields must be filled in!</string>
 </resources>

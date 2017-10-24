@@ -61,7 +61,7 @@
     <string name="reqSent">发送请求</string>
     <string name="saturday">星期六</string>
     <string name="search">寻求导师</string>
-    <string name="searchAndBecome">搜索课程并成为导师</string>
+    <string name="searchAndBecome">搜索课程并成为导师：</string>
     <string name="sort">分类</string>
     <string name="sunday">星期天</string>
     <string name="thursday">星期四</string>
@@ -74,4 +74,15 @@
     <string name="unlike">踩</string>
     <string name="studentsThatLikeMe">为我点赞的学生:</string>
     <string name="tutorsThatLikeMe">为我点赞的导师:</string>
+    <string name="changeLanguage">语言</string>
+    <string name="hint_suburb">区：</string>
+    <string name="searchAndChoose">搜索课程并选导师：</string>
+    <string name="withdraw">取消</string>
+    <string name="withdrawFrom">取消：</string>
+    <string name="empty">请填写所有项目!</string>
+    <string name="find_class">找课</string>
+    <string name="searchAndChooseStudent">搜查一个课程和显示我的学生:</string>
+    <string name="searchAndChooseTutor">搜查一个课程和显示我的 导师:</string>
+    <string name="showMyStudents">展示给学生看</string>
+    <string name="showMyTutors">展示给助教看</string>
 </resources>

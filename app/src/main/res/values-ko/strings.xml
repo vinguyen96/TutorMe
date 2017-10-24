@@ -63,7 +63,7 @@
     <string name="reqSent">요청이 보내졌습니다</string>
     <string name="saturday">토요일</string>
     <string name="search">선생님 찾기</string>
-    <string name="searchAndBecome">과목을 선택하고 선생님되기</string>
+    <string name="searchAndBecome">과목을 선택하고 선생님되기：</string>
     <string name="sort">분류하기</string>
     <string name="sunday">일요일</string>
     <string name="thursday">목요일</string>
@@ -83,4 +83,6 @@
     <string name="find_class">수업 찾기</string>
     <string name="withdraw">취소</string>
     <string name="withdrawFrom">취소:</string>
+    <string name="changeLanguage">언어</string>
+    <string name="empty">모든 빈칸을 채워야합니다</string>
 </resources>
