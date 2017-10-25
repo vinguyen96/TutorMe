@@ -122,7 +122,7 @@
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_degree"
+                    android:hint="@string/description"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -173,17 +173,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10" />
-
-            <Button
-                android:id="@+id/next_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorAccent"
-                android:text="@string/btn_next"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/sign_up_button"

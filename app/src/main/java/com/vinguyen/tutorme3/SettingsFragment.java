@@ -1,6 +1,7 @@
 package com.vinguyen.tutorme3;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -31,7 +32,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class SettingsFragment extends Fragment {
 
-    private Button btnChangeEmail, btnChangePassword, btnSendResetEmail, btnRemoveUser,
+    private Button btnChangeEmail, btnChangePassword, btnSendResetEmail,
             changeEmail, changePassword, sendEmail, remove, changeLanguage;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
@@ -39,6 +40,7 @@ public class SettingsFragment extends Fragment {
     private EditText oldEmail, newEmail, password, newPassword;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+    Activity activity;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -50,11 +52,12 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        activity = getActivity();
+
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         btnChangeEmail = (Button) rootView.findViewById(R.id.change_email_button);
         btnChangePassword = (Button) rootView.findViewById(R.id.change_password_button);
         btnSendResetEmail = (Button) rootView.findViewById(R.id.sending_pass_reset_button);
-        btnRemoveUser = (Button) rootView.findViewById(R.id.remove_user_button);
         changeEmail = (Button) rootView.findViewById(R.id.changeEmail);
         changePassword = (Button) rootView.findViewById(R.id.changePass);
         sendEmail = (Button) rootView.findViewById(R.id.send);
@@ -220,30 +223,6 @@ public class SettingsFragment extends Fragment {
                 } else {
                     oldEmail.setError("Enter email");
                     progressBar.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        btnRemoveUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null) {
-                    user.delete()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getActivity(), SignupActivity.class));
-                                        getActivity().finish();
-                                        progressBar.setVisibility(View.GONE);
-                                    } else {
-                                        Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
                 }
             }
         });

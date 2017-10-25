@@ -56,8 +56,8 @@ public class WithdrawFragment extends Fragment {
                     userIDCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     userDatabaseReference.child("INFS1609").child("Tutors").child(userIDCurrent).removeValue();
                     userDatabaseReference.child("Courses").child(course).child("Tutors").child(userIDCurrent).removeValue();
-                    FindMyTutorFragment fragment = new FindMyTutorFragment();
-                    getFragmentManager().beginTransaction()
+                    FindStudentFragment fragment = new FindStudentFragment();
+                    getParentFragment().getFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, fragment)
                             .addToBackStack(null)
                             .commit();

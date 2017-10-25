@@ -26,7 +26,7 @@ import java.util.List;
 public class SignupActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword, inputName, inputAge, inputDegree, inputContact, inputSuburb, captchaText, inputDescription;
-    private Button btnSignIn, btnSignUp, btnNext;
+    private Button btnSignIn, btnSignUp;
     private String email, password, name, age, degree, contact, suburb, description;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
@@ -49,7 +49,6 @@ public class SignupActivity extends AppCompatActivity {
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        btnNext = (Button) findViewById(R.id.next_button);
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
         inputEmail = (EditText) findViewById(R.id.email);
@@ -62,12 +61,13 @@ public class SignupActivity extends AppCompatActivity {
         inputDescription = (EditText) findViewById(R.id.description);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        btnSignUp.setVisibility(View.GONE);
+        /*btnSignUp.setVisibility(View.GONE);
         inputName.setVisibility(View.GONE);
         inputAge.setVisibility(View.GONE);
         inputDegree.setVisibility(View.GONE);
         inputContact.setVisibility(View.GONE);
         inputSuburb.setVisibility(View.GONE);
+        inputDescription.setVisibility(View.GONE);*/
 
         imageView1 = (ImageView)findViewById(R.id.imageView);
         captchaText = (EditText) findViewById(R.id.captchaText);
@@ -80,7 +80,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 email = inputEmail.getText().toString().trim();
@@ -107,38 +107,6 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
-
-                auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-                                    btnNext.setVisibility(View.GONE);
-                                    inputEmail.setVisibility(View.GONE);
-                                    inputPassword.setVisibility(View.GONE);
-                                    btnSignUp.setVisibility(View.VISIBLE);
-                                    inputName.setVisibility(View.VISIBLE);
-                                    inputAge.setVisibility(View.VISIBLE);
-                                    inputDegree.setVisibility(View.VISIBLE);
-                                    inputContact.setVisibility(View.VISIBLE);
-                                    inputSuburb.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
-            }
-        });
-
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 name = inputName.getText().toString().trim();
                 age = inputAge.getText().toString().trim();
                 degree = inputDegree.getText().toString().trim();
@@ -152,21 +120,42 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
-                FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference userDatabaseReference = userDatabase.getReference("Users");
-                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                Toast.makeText(SignupActivity.this, " " + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+                                DatabaseReference userDatabaseReference = userDatabase.getReference("Users");
+                                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                UserEntity userEntity = new UserEntity(name, age, degree, contact, suburb, description);
-                userDatabaseReference.child(currentFirebaseUser.getUid()).setValue(userEntity);
+                                UserEntity userEntity = new UserEntity(name, age, degree, contact, suburb, description);
+                                userDatabaseReference.child(currentFirebaseUser.getUid()).setValue(userEntity);
 
-                startActivity(new Intent(SignupActivity.this, NavigationDrawerActivity.class));
-
-                //progressBar.setVisibility(View.VISIBLE);
-                //create user
-
+                                startActivity(new Intent(SignupActivity.this, NavigationDrawerActivity.class));
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    /*btnNext.setVisibility(View.GONE);
+                                    inputEmail.setVisibility(View.GONE);
+                                    inputPassword.setVisibility(View.GONE);
+                                    btnSignUp.setVisibility(View.VISIBLE);
+                                    inputName.setVisibility(View.VISIBLE);
+                                    inputAge.setVisibility(View.VISIBLE);
+                                    inputDegree.setVisibility(View.VISIBLE);
+                                    inputContact.setVisibility(View.VISIBLE);
+                                    inputSuburb.setVisibility(View.VISIBLE);
+                                    inputDescription.setVisibility(View.VISIBLE);*/
+                                }
+                            }
+                        });
             }
         });
-
 
     }
 
